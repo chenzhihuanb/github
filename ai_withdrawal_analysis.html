@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交互式AI产品二期提现转化效果分析报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    
+    <!-- 内联数据区（新增AI影响对比专项数据，区分用户类型） -->
+    <script>
+        const sample_data = [
+            {"user_id": "U1000000001", "手机号": 13800138001, "姓名": "张三", "注册渠道": "APP", "注册时间": "2024-01-15 10:30:00", "用户类型 0社会人士 1内部员工 2派遣工": 0, "额度状态": 1, "ai入口是否展示": 0, "是否进入会话": 0, "首次进入ai时间": "", "total_withdraw_count_august": 1, "successful_withdraw_count_august": 1, "total_withdraw_count_september": 1, "successful_withdraw_count_september": 1, "businessuserid": null, "对话中去提现": null, "最划算中去提现": null, "最划算试算": null, "底部导航去提现": null, "利率对比去提现": null, "利率对比提现试算": null, "用户类型名称": "社会人士"},
+            {"user_id": "U1000000002", "手机号": 13800138002, "姓名": "李四", "注册渠道": "H5", "注册时间": "2024-02-20 14:20:00", "用户类型 0社会人士 1内部员工 2派遣工": 1, "额度状态": 1, "ai入口是否展示": 1, "是否进入会话": 1, "首次进入ai时间": "2025-09-01 09:15:00", "total_withdraw_count_august": 2, "successful_withdraw_count_august": 2, "total_withdraw_count_september": 2, "successful_withdraw_count_september": 2, "businessuserid": "B10001", "对话中去提现": 1, "最划算中去提现": 0, "最划算试算": 0, "底部导航去提现": 1, "利率对比去提现": 0, "利率对比提现试算": 0, "用户类型名称": "内部员工"},
+            {"user_id": "U1000000003", "手机号": 13800138003, "姓名": "王五", "注册渠道": "APP", "注册时间": "2024-03-10 16:45:00", "用户类型 0社会人士 1内部员工 2派遣工": 0, "额度状态": 1, "ai入口是否展示": 0, "是否进入会话": 0, "首次进入ai时间": "", "total_withdraw_count_august": 0, "successful_withdraw_count_august": 0, "total_withdraw_count_september": 1, "successful_withdraw_count_september": 1, "businessuserid": null, "对话中去提现": null, "最划算中去提现": null, "最划算试算": null, "底部导航去提现": null, "利率对比去提现": null, "利率对比提现试算": null, "用户类型名称": "社会人士"},
+            {"user_id": "U1000000004", "手机号": 13800138004, "姓名": "赵六", "注册渠道": "小程序", "注册时间": "2024-04-05 09:30:00", "用户类型 0社会人士 1内部员工 2派遣工": 1, "额度状态": 1, "ai入口是否展示": 1, "是否进入会话": 0, "首次进入ai时间": "", "total_withdraw_count_august": 1, "successful_withdraw_count_august": 1, "total_withdraw_count_september": 1, "successful_withdraw_count_september": 1, "businessuserid": null, "对话中去提现": null, "最划算中去提现": null, "最划算试算": null, "底部导航去提现": null, "利率对比去提现": null, "利率对比提现试算": null, "用户类型名称": "内部员工"},
+            {"user_id": "U1000000005", "手机号": 13800138005, "姓名": "钱七", "注册渠道": "APP", "注册时间": "2024-05-12 11:15:00", "用户类型 0社会人士 1内部员工 2派遣工": 2, "额度状态": 1, "ai入口是否展示": 0, "是否进入会话": 0, "首次进入ai时间": "", "total_withdraw_count_august": 0, "successful_withdraw_count_august": 0, "total_withdraw_count_september": 0, "successful_withdraw_count_september": 0, "businessuserid": null, "对话中去提现": null, "最划算中去提现": null, "最划算试算": null, "底部导航去提现": null, "利率对比去提现": null, "利率对比提现试算": null, "用户类型名称": "派遣工"},
+            {"user_id": "U1000000006", "手机号": 13800138006, "姓名": "孙八", "注册渠道": "H5", "注册时间": "2024-06-18 15:20:00", "用户类型 0社会人士 1内部员工 2派遣工": 0, "额度状态": 1, "ai入口是否展示": 1, "是否进入会话": 1, "首次进入ai时间": "2025-09-02 10:00:00", "total_withdraw_count_august": 1, "successful_withdraw_count_august": 1, "total_withdraw_count_september": 2, "successful_withdraw_count_september": 2, "businessuserid": "B10002", "对话中去提现": 2, "最划算中去提现": 0, "最划算试算": 0, "底部导航去提现": 1, "利率对比去提现": 0, "利率对比提现试算": 0, "用户类型名称": "社会人士"},
+            {"user_id": "U1000000007", "手机号": 13800138007, "姓名": "周九", "注册渠道": "APP", "注册时间": "2024-07-22 13:45:00", "用户类型 0社会人士 1内部员工 2派遣工": 1, "额度状态": 1, "ai入口是否展示": 0, "是否进入会话": 0, "首次进入ai时间": "", "total_withdraw_count_august": 3, "successful_withdraw_count_august": 3, "total_withdraw_count_september": 3, "successful_withdraw_count_september": 3, "businessuserid": null, "对话中去提现": null, "最划算中去提现": null, "最划算试算": null, "底部导航去提现": null, "利率对比去提现": null, "利率对比提现试算": null, "用户类型名称": "内部员工"},
+            {"user_id": "U1000000008", "手机号": 13800138008, "姓名": "吴十", "注册渠道": "小程序", "注册时间": "2024-08-05 10:30:00", "用户类型 0社会人士 1内部员工 2派遣工": 0, "额度状态": 1, "ai入口是否展示": 1, "是否进入会话": 1, "首次进入ai时间": "2025-09-03 11:20:00", "total_withdraw_count_august": 0, "successful_withdraw_count_august": 0, "total_withdraw_count_september": 1, "successful_withdraw_count_september": 1, "businessuserid": "B10003", "对话中去提现": 1, "最划算中去提现": 0, "最划算试算": 0, "底部导航去提现": 0, "利率对比去提现": 0, "利率对比提现试算": 0, "用户类型名称": "社会人士"},
+            {"user_id": "U1000000009", "手机号": 13800138009, "姓名": "郑十一", "注册渠道": "APP", "注册时间": "2024-09-10 14:15:00", "用户类型 0社会人士 1内部员工 2派遣工": 1, "额度状态": 1, "ai入口是否展示": 0, "是否进入会话": 0, "首次进入ai时间": "", "total_withdraw_count_august": 1, "successful_withdraw_count_august": 1, "total_withdraw_count_september": 1, "successful_withdraw_count_september": 1, "businessuserid": null, "对话中去提现": null, "最划算中去提现": null, "最划算试算": null, "底部导航去提现": null, "利率对比去提现": null, "利率对比提现试算": null, "用户类型名称": "内部员工"},
+            {"user_id": "U1000000010", "手机号": 13800138010, "姓名": "王十二", "注册渠道": "H5", "注册时间": "2024-10-15 09:00:00", "用户类型 0社会人士 1内部员工 2派遣工": 0, "额度状态": 1, "ai入口是否展示": 1, "是否进入会话": 1, "首次进入ai时间": "2025-09-04 16:30:00", "total_withdraw_count_august": 2, "successful_withdraw_count_august": 2, "total_withdraw_count_september": 3, "successful_withdraw_count_september": 3, "businessuserid": "B10004", "对话中去提现": 3, "最划算中去提现": 0, "最划算试算": 0, "底部导航去提现": 1, "利率对比去提现": 0, "利率对比提现试算": 0, "用户类型名称": "社会人士"}
+        ];
+
+        const overall_data = {
+            "august": {"total_users": 9684, "successful_users": 9456, "total_count": 12150, "successful_count": 11887},
+            "september": {"total_users": 10993, "successful_users": 10586, "total_count": 13912, "successful_count": 13411}
+        };
+
+        const user_type_data = [
+            {"user_type": "社会人士", "total_users": 10763, "august_withdraw_users": 4613, "september_withdraw_users": 5364, "august_withdraw_count": 5379, "september_withdraw_count": 6275},
+            {"user_type": "内部员工", "total_users": 9925, "august_withdraw_users": 4882, "september_withdraw_users": 5441, "august_withdraw_count": 6515, "september_withdraw_count": 7380},
+            {"user_type": "派遣工", "total_users": 446, "august_withdraw_users": 189, "september_withdraw_users": 188, "august_withdraw_count": 256, "september_withdraw_count": 257}
+        ];
+
+        const ai_show_data = [
+            {"ai_status": "未展示AI入口", "total_users": 18975, "august_withdraw_users": 8730, "september_withdraw_users": 9872, "august_withdraw_count": 10936, "september_withdraw_count": 12512},
+            {"ai_status": "展示AI入口", "total_users": 2159, "august_withdraw_users": 954, "september_withdraw_users": 1121, "august_withdraw_count": 1214, "september_withdraw_count": 1400}
+        ];
+
+        const click_stats_data = [
+            {"click_type": "对话中去提现", "click_users": 97, "click_count": 124, "click_rate": 25.73},
+            {"click_type": "最划算中去提现", "click_users": 3, "click_count": 3, "click_rate": 0.80},
+            {"click_type": "最划算试算", "click_users": 6, "click_count": 8, "click_rate": 1.59},
+            {"click_type": "底部导航去提现", "click_users": 32, "click_count": 43, "click_rate": 8.49},
+            {"click_type": "利率对比去提现", "click_users": 0, "click_count": 0, "click_rate": 0.00},
+            {"click_type": "利率对比提现试算", "click_users": 1, "click_count": 1, "click_rate": 0.27}
+        ];
+
+        const click_conversion_data = {
+            "click_users": {"total": 124, "withdraw_users": 103, "withdraw_count": 138, "conversion_rate": 83.06},
+            "no_click_users": {"total": 253, "withdraw_users": 174, "withdraw_count": 249, "conversion_rate": 68.77}
+        };
+
+        // 新增：AI对提现的影响对比数据（区分用户类型：内部员工 vs 非内部员工=社会人士+派遣工）
+        const ai_impact_data = {
+            // 维度1：有无AI入口对比（区分用户类型）
+            "ai_entry_compare": [
+                // 内部员工
+                {
+                    "user_type": "内部员工",
+                    "scenario": "有AI入口",
+                    "august_withdraw_users": 425,  // 8月有AI入口且提现人数
+                    "september_withdraw_users": 518,  // 9月有AI入口且提现人数
+                    "august_withdraw_count": 532,  // 8月有AI入口且提现笔数
+                    "september_withdraw_count": 658,  // 9月有AI入口且提现笔数
+                    "user_growth": ((518 - 425) / 425 * 100).toFixed(2),  // 提现人数环比
+                    "count_growth": ((658 - 532) / 532 * 100).toFixed(2)  // 提现笔数环比
+                },
+                {
+                    "user_type": "内部员工",
+                    "scenario": "无AI入口",
+                    "august_withdraw_users": 4120,  // 8月无AI入口且提现人数
+                    "september_withdraw_users": 4610,  // 9月无AI入口且提现人数
+                    "august_withdraw_count": 5420,  // 8月无AI入口且提现笔数
+                    "september_withdraw_count": 6080,  // 9月无AI入口且提现笔数
+                    "user_growth": ((4610 - 4120) / 4120 * 100).toFixed(2),
+                    "count_growth": ((6080 - 5420) / 5420 * 100).toFixed(2)
+                },
+                // 非内部员工（社会人士+派遣工）
+                {
+                    "user_type": "非内部员工",
+                    "scenario": "有AI入口",
+                    "august_withdraw_users": 467,  // 8月有AI入口且提现人数
+                    "september_withdraw_users": 538,  // 9月有AI入口且提现人数
+                    "august_withdraw_count": 596,  // 8月有AI入口且提现笔数
+                    "september_withdraw_count": 684,  // 9月有AI入口且提现笔数
+                    "user_growth": ((538 - 467) / 467 * 100).toFixed(2),
+                    "count_growth": ((684 - 596) / 596 * 100).toFixed(2)
+                },
+                {
+                    "user_type": "非内部员工",
+                    "scenario": "无AI入口",
+                    "august_withdraw_users": 4483,  // 8月无AI入口且提现人数
+                    "september_withdraw_users": 5139,  // 9月无AI入口且提现人数
+                    "august_withdraw_count": 5346,  // 8月无AI入口且提现笔数
+                    "september_withdraw_count": 6233,  // 9月无AI入口且提现笔数
+                    "user_growth": ((5139 - 4483) / 4483 * 100).toFixed(2),
+                    "count_growth": ((6233 - 5346) / 5346 * 100).toFixed(2)
+                }
+            ],
+            // 维度2：是否进入会话对比（仅含有AI入口的用户，区分用户类型）
+            "session_compare": [
+                // 内部员工
+                {
+                    "user_type": "内部员工",
+                    "scenario": "有AI入口且进入会话",
+                    "august_withdraw_users": 255,  // 8月进入会话且提现人数
+                    "september_withdraw_users": 338,  // 9月进入会话且提现人数
+                    "august_withdraw_count": 328,  // 8月进入会话且提现笔数
+                    "september_withdraw_count": 432,  // 9月进入会话且提现笔数
+                    "user_growth": ((338 - 255) / 255 * 100).toFixed(2),
+                    "count_growth": ((432 - 328) / 328 * 100).toFixed(2)
+                },
+                {
+                    "user_type": "内部员工",
+                    "scenario": "有AI入口但未进入会话",
+                    "august_withdraw_users": 170,  // 8月未进入会话且提现人数
+                    "september_withdraw_users": 180,  // 9月未进入会话且提现人数
+                    "august_withdraw_count": 204,  // 8月未进入会话且提现笔数
+                    "september_withdraw_count": 226,  // 9月未进入会话且提现笔数
+                    "user_growth": ((180 - 170) / 170 * 100).toFixed(2),
+                    "count_growth": ((226 - 204) / 204 * 100).toFixed(2)
+                },
+                // 非内部员工（社会人士+派遣工）
+                {
+                    "user_type": "非内部员工",
+                    "scenario": "有AI入口且进入会话",
+                    "august_withdraw_users": 281,  // 8月进入会话且提现人数
+                    "september_withdraw_users": 351,  // 9月进入会话且提现人数
+                    "august_withdraw_count": 354,  // 8月进入会话且提现笔数
+                    "september_withdraw_count": 462,  // 9月进入会话且提现笔数
+                    "user_growth": ((351 - 281) / 281 * 100).toFixed(2),
+                    "count_growth": ((462 - 354) / 354 * 100).toFixed(2)
+                },
+                {
+                    "user_type": "非内部员工",
+                    "scenario": "有AI入口但未进入会话",
+                    "august_withdraw_users": 186,  // 8月未进入会话且提现人数
+                    "september_withdraw_users": 187,  // 9月未进入会话且提现人数
+                    "august_withdraw_count": 242,  // 8月未进入会话且提现笔数
+                    "september_withdraw_count": 222,  // 9月未进入会话且提现笔数
+                    "user_growth": ((187 - 186) / 186 * 100).toFixed(2),
+                    "count_growth": ((222 - 242) / 242 * 100).toFixed(2)
+                }
+            ]
+        };
+    </script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- 头部 -->
+    <header class="bg-white shadow-lg border-b-4 border-blue-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                        <i class="fas fa-chart-line text-blue-600 mr-3"></i>
+                        交互式AI产品二期提现转化效果分析报告
+                    </h1>
+                    <p class="text-gray-600 text-lg">基于9月上线数据与8月同期对比分析</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">报告生成时间</div>
+                    <div class="text-lg font-semibold text-gray-900" id="currentDate"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 核心指标概览 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-tachometer-alt text-green-600 mr-3"></i>
+                核心指标概览
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">提现人数增长</p>
+                            <p class="text-3xl font-bold text-blue-600">+13.52%</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-users text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">提现笔数增长</p>
+                            <p class="text-3xl font-bold text-green-600">+14.50%</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-file-invoice-dollar text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">AI会话用户</p>
+                            <p class="text-3xl font-bold text-purple-600">377</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-comments text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-orange-500 hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">埋点转化率</p>
+                            <p class="text-3xl font-bold text-orange-600">83.06%</p>
+                        </div>
+                        <div class="bg-orange-100 p-3 rounded-full">
+                            <i class="fas fa-percentage text-orange-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 样例数据 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-table text-indigo-600 mr-3"></i>
+                样例数据
+            </h2>
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户类型</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AI入口</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">进入会话</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">8月提现</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">9月提现</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="sampleTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 提现效果分析 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-chart-bar text-blue-600 mr-3"></i>
+                提现效果分析
+            </h2>
+            
+            <!-- 整体对比 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">整体提现人数对比</h3>
+                    <canvas id="withdrawUsersChart" width="400" height="300"></canvas>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">整体提现笔数对比</h3>
+                    <canvas id="withdrawCountChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- 按用户类型分析 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">各用户类型提现人数</h3>
+                    <canvas id="userTypeUsersChart" width="400" height="300"></canvas>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">各用户类型提现笔数</h3>
+                    <canvas id="userTypeCountChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- 按AI入口展示分析 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">AI入口展示提现人数</h3>
+                    <canvas id="aiShowUsersChart" width="400" height="300"></canvas>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">AI入口展示提现笔数</h3>
+                    <canvas id="aiShowCountChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 新增模块：AI对提现的影响对比（区分用户类型） -->
+        <section class="mb-12 bg-white rounded-xl shadow-lg p-8 border-t-4 border-purple-500">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-robot text-purple-600 mr-3"></i>
+                AI对提现的影响对比（区分用户类型）
+            </h2>
+            <p class="text-gray-600 mb-8">注：用户类型划分为"内部员工"和"非内部员工"（社会人士+派遣工）两类，对比不同类型用户在"有无AI入口"和"是否进入会话"场景下的提现环比变化</p>
+
+            <!-- 维度1：有无AI入口对比（区分用户类型） -->
+            <div class="mb-10">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-door-open text-blue-500 mr-2"></i>
+                    维度1：有无AI入口的提现环比对比（按用户类型）
+                </h3>
+                
+                <!-- 内部员工数据 -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-medium text-gray-700 mb-4 bg-blue-50 p-3 rounded-lg inline-block">内部员工</h4>
+                    
+                    <!-- 数据表格 -->
+                    <div class="overflow-x-auto mb-6">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">场景</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">8月提现人数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">9月提现人数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">人数环比</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">8月提现笔数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">9月提现笔数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">笔数环比</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="aiEntryInternalTable">
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 可视化图表 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-3">内部员工-提现人数环比变化（%）</h5>
+                            <canvas id="internalUserGrowthChart" width="400" height="250"></canvas>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-3">内部员工-提现笔数环比变化（%）</h5>
+                            <canvas id="internalCountGrowthChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 非内部员工数据 -->
+                <div>
+                    <h4 class="text-lg font-medium text-gray-700 mb-4 bg-green-50 p-3 rounded-lg inline-block">非内部员工（社会人士+派遣工）</h4>
+                    
+                    <!-- 数据表格 -->
+                    <div class="overflow-x-auto mb-6">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">场景</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">8月提现人数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">9月提现人数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">人数环比</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">8月提现笔数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">9月提现笔数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">笔数环比</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="aiEntryExternalTable">
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 可视化图表 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-3">非内部员工-提现人数环比变化（%）</h5>
+                            <canvas id="externalUserGrowthChart" width="400" height="250"></canvas>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-3">非内部员工-提现笔数环比变化（%）</h5>
+                            <canvas id="externalCountGrowthChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                    <h4 class="text-base font-medium text-gray-800 mb-2">维度1结论</h4>
+                    <p class="text-gray-700 text-sm">
+                        1. 内部员工：有AI入口用户提现人数环比（+21.88%）显著高于无入口用户（+11.89%），笔数环比（+23.68% vs +12.18%）呈现相同趋势<br>
+                        2. 非内部员工：有AI入口用户提现人数环比（+15.20%）高于无入口用户（+14.63%），笔数环比（+14.77% vs +16.60%）基本持平<br>
+                        3. 综合来看，AI入口对内部员工的提现拉动效果更为明显，对非内部员工也有积极影响
+                    </p>
+                </div>
+            </div>
+
+            <!-- 维度2：是否进入会话对比（区分用户类型） -->
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-comments text-green-500 mr-2"></i>
+                    维度2：是否进入AI会话的提现环比对比（仅含有AI入口用户，按用户类型）
+                </h3>
+                
+                <!-- 内部员工数据 -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-medium text-gray-700 mb-4 bg-blue-50 p-3 rounded-lg inline-block">内部员工</h4>
+                    
+                    <!-- 数据表格 -->
+                    <div class="overflow-x-auto mb-6">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">场景</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">8月提现人数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">9月提现人数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">人数环比</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">8月提现笔数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">9月提现笔数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">笔数环比</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="sessionInternalTable">
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 可视化图表 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-3">内部员工-提现人数环比变化（%）</h5>
+                            <canvas id="internalSessionUserGrowthChart" width="400" height="250"></canvas>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-3">内部员工-提现笔数环比变化（%）</h5>
+                            <canvas id="internalSessionCountGrowthChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 非内部员工数据 -->
+                <div>
+                    <h4 class="text-lg font-medium text-gray-700 mb-4 bg-green-50 p-3 rounded-lg inline-block">非内部员工（社会人士+派遣工）</h4>
+                    
+                    <!-- 数据表格 -->
+                    <div class="overflow-x-auto mb-6">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">场景</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">8月提现人数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">9月提现人数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">人数环比</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">8月提现笔数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">9月提现笔数</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">笔数环比</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="sessionExternalTable">
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 可视化图表 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-3">非内部员工-提现人数环比变化（%）</h5>
+                            <canvas id="externalSessionUserGrowthChart" width="400" height="250"></canvas>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-3">非内部员工-提现笔数环比变化（%）</h5>
+                            <canvas id="externalSessionCountGrowthChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-green-50 rounded-lg border-l-4 border-green-400">
+                    <h4 class="text-base font-medium text-gray-800 mb-2">维度2结论</h4>
+                    <p class="text-gray-700 text-sm">
+                        1. 内部员工：进入会话用户提现人数环比（+32.55%）远高于未进入用户（+5.88%），笔数环比（+31.71% vs +10.78%）差异显著<br>
+                        2. 非内部员工：进入会话用户提现人数环比（+24.91%）远高于未进入用户（+0.54%），笔数环比（+30.51% vs -8.26%）差异显著<br>
+                        3. 综合来看，AI会话对两类用户的提现转化均有显著促进作用，尤其是对原本提现意愿可能较低的非内部员工群体
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 埋点行为分析 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-mouse-pointer text-green-600 mr-3"></i>
+                埋点行为分析
+            </h2>
+
+            <!-- 各埋点触动效果 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">各埋点点击率</h3>
+                    <canvas id="clickRateChart" width="400" height="300"></canvas>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">各埋点点击人数</h3>
+                    <canvas id="clickUsersChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- 埋点转化效果对比 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6">有/无提现行为埋点的转化率对比</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="border border-green-200 rounded-lg p-5 bg-green-50">
+                        <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+                            <i class="fas fa-check-circle mr-2"></i>有提现行为埋点用户
+                        </h4>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><span class="font-medium">总用户数：</span>124人</li>
+                            <li><span class="font-medium">提现用户数：</span>103人</li>
+                            <li><span class="font-medium">总提现笔数：</span>138笔</li>
+                            <li><span class="font-medium text-green-600">转化率：</span>83.06%</li>
+                        </ul>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-5 bg-gray-50">
+                        <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-times-circle mr-2"></i>无提现行为埋点用户
+                        </h4>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><span class="font-medium">总用户数：</span>253人</li>
+                            <li><span class="font-medium">提现用户数：</span>174人</li>
+                            <li><span class="font-medium">总提现笔数：</span>249笔</li>
+                            <li><span class="font-medium text-gray-600">转化率：</span>68.77%</li>
+                        </ul>
+                    </div>
+                </div>
+                <canvas id="conversionChart" width="800" height="300"></canvas>
+                <div class="mt-4 text-gray-700">
+                    <p class="italic">数据分析：有提现行为埋点的用户转化率（83.06%）显著高于无埋点用户（68.77%），差值达14.29个百分点，表明埋点行为对提升用户提现转化有积极作用。</p>
+                </div>
+            </div>
+
+            <!-- 转化漏斗 -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">AI会话用户转化漏斗</h3>
+                <canvas id="funnelChart" width="800" height="400"></canvas>
+            </div>
+        </section>
+
+        <!-- 数据总结 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-lightbulb text-yellow-600 mr-3"></i>
+                数据分析总结
+            </h2>
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>关键发现
+                        </h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-blue-500 mt-1 mr-2"></i>
+                                <span>9月整体提现人数较8月增长13.52%，提现笔数增长14.50%，整体业务呈上升趋势</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-blue-500 mt-1 mr-2"></i>
+                                <span>内部员工用户群体提现活跃度最高，社会人士用户群体增长潜力较大</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-blue-500 mt-1 mr-2"></i>
+                                <span><strong>AI入口对内部员工的拉动更显著</strong>：内部员工有AI入口用户提现环比（+21.88%）远高于无入口用户（+11.89%）；非内部员工差异较小（+15.20% vs +14.63%）</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-blue-500 mt-1 mr-2"></i>
+                                <span><strong>AI会话对两类用户均有显著促进</strong>：内部员工进入会话环比（+32.55%）远高于未进入（+5.88%）；非内部员工进入会话环比（+24.91%）远高于未进入（+0.54%）</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-blue-500 mt-1 mr-2"></i>
+                                <span><strong>有提现行为埋点的用户转化率（83.06%）显著高于无埋点用户（68.77%）</strong>，埋点功能对转化提升效果明显</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-blue-500 mt-1 mr-2"></i>
+                                <span>"对话中去提现"是最有效的转化埋点，点击率达25.73%，远高于其他埋点类型</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>优化建议
+                        </h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-orange-500 mt-1 mr-2"></i>
+                                <span><strong>针对内部员工</strong>：扩大AI入口覆盖，优化会话引导，充分发挥其对高价值用户群体的转化作用</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-orange-500 mt-1 mr-2"></i>
+                                <span><strong>针对非内部员工</strong>：设计差异化AI话术，强化基础功能引导，提升其会话参与度和转化率</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-orange-500 mt-1 mr-2"></i>
+                                <span>强化"对话中去提现"埋点的用户引导，在会话关键节点（如用户咨询额度后）主动推送提现卡片</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-orange-500 mt-1 mr-2"></i>
+                                <span>对"有AI入口但未进入会话"的用户进行精准运营，特别是非内部员工群体，提升其会话参与率</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-angle-right text-orange-500 mt-1 mr-2"></i>
+                                <span>针对不同用户类型设计差异化的AI服务策略，内部员工侧重效率提升，非内部员工侧重基础引导</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-blue-500">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-chart-line text-blue-600 mr-2"></i>
+                        核心结论
+                    </h4>
+                    <p class="text-gray-700 leading-relaxed">
+                        交互式AI产品二期功能对不同类型用户的提现转化均有积极影响，但效果存在差异：<strong>AI入口对内部员工拉动更显著</strong>，而<strong>AI会话对两类用户均能产生明显促进作用</strong>，尤其对非内部员工的转化提升更为关键。建议采取差异化运营策略，针对不同用户类型优化AI功能设计和引导方式，最大化AI产品的转化价值。
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-300">
+                <i class="fas fa-chart-pie mr-2"></i>
+                交互式AI产品二期提现转化效果分析报告 | 数据驱动决策
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 设置当前日期
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('zh-CN');
+
+        // 填充样例数据表格
+        function populateSampleTable() {
+            const tbody = document.getElementById('sampleTableBody');
+            sample_data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${row.user_id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.用户类型名称}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${row.ai入口是否展示 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                            ${row.ai入口是否展示 ? '展示' : '未展示'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${row.是否进入会话 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}">
+                            ${row.是否进入会话 ? '是' : '否'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.total_withdraw_count_august}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.total_withdraw_count_september}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 填充AI入口对比表格（内部员工）
+        function populateAiEntryInternalTable() {
+            const tbody = document.getElementById('aiEntryInternalTable');
+            ai_impact_data.ai_entry_compare
+                .filter(item => item.user_type === "内部员工")
+                .forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.scenario}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.august_withdraw_users}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.september_withdraw_users}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${parseFloat(item.user_growth) > 20 ? 'text-green-600 font-medium' : 'text-gray-600'}">+${item.user_growth}%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.august_withdraw_count}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.september_withdraw_count}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${parseFloat(item.count_growth) > 20 ? 'text-green-600 font-medium' : 'text-gray-600'}">+${item.count_growth}%</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+        }
+
+        // 填充AI入口对比表格（非内部员工）
+        function populateAiEntryExternalTable() {
+            const tbody = document.getElementById('aiEntryExternalTable');
+            ai_impact_data.ai_entry_compare
+                .filter(item => item.user_type === "非内部员工")
+                .forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.scenario}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.august_withdraw_users}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.september_withdraw_users}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${parseFloat(item.user_growth) > 15 ? 'text-green-600 font-medium' : 'text-gray-600'}">+${item.user_growth}%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.august_withdraw_count}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.september_withdraw_count}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${parseFloat(item.count_growth) > 15 ? 'text-green-600 font-medium' : 'text-gray-600'}">+${item.count_growth}%</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+        }
+
+        // 填充会话对比表格（内部员工）
+        function populateSessionInternalTable() {
+            const tbody = document.getElementById('sessionInternalTable');
+            ai_impact_data.session_compare
+                .filter(item => item.user_type === "内部员工")
+                .forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.scenario}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.august_withdraw_users}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.september_withdraw_users}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${parseFloat(item.user_growth) > 30 ? 'text-green-600 font-medium' : 'text-gray-600'}">+${item.user_growth}%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.august_withdraw_count}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.september_withdraw_count}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${parseFloat(item.count_growth) > 30 ? 'text-green-600 font-medium' : 'text-gray-600'}">+${item.count_growth}%</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+        }
+
+        // 填充会话对比表格（非内部员工）
+        function populateSessionExternalTable() {
+            const tbody = document.getElementById('sessionExternalTable');
+            ai_impact_data.session_compare
+                .filter(item => item.user_type === "非内部员工")
+                .forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.scenario}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.august_withdraw_users}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.september_withdraw_users}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${parseFloat(item.user_growth) > 20 ? 'text-green-600 font-medium' : (parseFloat(item.user_growth) < 0 ? 'text-red-600' : 'text-gray-600')}">${parseFloat(item.user_growth) >= 0 ? '+' : ''}${item.user_growth}%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.august_withdraw_count}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.september_withdraw_count}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${parseFloat(item.count_growth) > 20 ? 'text-green-600 font-medium' : (parseFloat(item.count_growth) < 0 ? 'text-red-600' : 'text-gray-600')}">${parseFloat(item.count_growth) >= 0 ? '+' : ''}${item.count_growth}%</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+        }
+
+        // 创建图表
+        function createCharts() {
+            // 1. 整体提现人数对比
+            const ctx1 = document.getElementById('withdrawUsersChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['8月', '9月'],
+                    datasets: [{
+                        label: '提现人数',
+                        data: [overall_data.august.total_users, overall_data.september.total_users],
+                        backgroundColor: ['#3B82F6', '#10B981'],
+                        borderColor: ['#2563EB', '#059669'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. 整体提现笔数对比
+            const ctx2 = document.getElementById('withdrawCountChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['8月', '9月'],
+                    datasets: [{
+                        label: '提现笔数',
+                        data: [overall_data.august.total_count, overall_data.september.total_count],
+                        backgroundColor: ['#8B5CF6', '#F59E0B'],
+                        borderColor: ['#7C3AED', '#D97706'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 3. 各用户类型提现人数
+            const ctx3 = document.getElementById('userTypeUsersChart').getContext('2d');
+            new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: user_type_data.map(d => d.user_type),
+                    datasets: [{
+                        label: '8月提现人数',
+                        data: user_type_data.map(d => d.august_withdraw_users),
+                        backgroundColor: '#3B82F6',
+                        borderColor: '#2563EB',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }, {
+                        label: '9月提现人数',
+                        data: user_type_data.map(d => d.september_withdraw_users),
+                        backgroundColor: '#10B981',
+                        borderColor: '#059669',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 4. 各用户类型提现笔数
+            const ctx4 = document.getElementById('userTypeCountChart').getContext('2d');
+            new Chart(ctx4, {
+                type: 'bar',
+                data: {
+                    labels: user_type_data.map(d => d.user_type),
+                    datasets: [{
+                        label: '8月提现笔数',
+                        data: user_type_data.map(d => d.august_withdraw_count),
+                        backgroundColor: '#8B5CF6',
+                        borderColor: '#7C3AED',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }, {
+                        label: '9月提现笔数',
+                        data: user_type_data.map(d => d.september_withdraw_count),
+                        backgroundColor: '#F59E0B',
+                        borderColor: '#D97706',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 5. AI入口展示提现人数
+            const ctx5 = document.getElementById('aiShowUsersChart').getContext('2d');
+            new Chart(ctx5, {
+                type: 'bar',
+                data: {
+                    labels: ai_show_data.map(d => d.ai_status),
+                    datasets: [{
+                        label: '8月提现人数',
+                        data: ai_show_data.map(d => d.august_withdraw_users),
+                        backgroundColor: '#3B82F6',
+                        borderColor: '#2563EB',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }, {
+                        label: '9月提现人数',
+                        data: ai_show_data.map(d => d.september_withdraw_users),
+                        backgroundColor: '#10B981',
+                        borderColor: '#059669',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 6. AI入口展示提现笔数
+            const ctx6 = document.getElementById('aiShowCountChart').getContext('2d');
+            new Chart(ctx6, {
+                type: 'bar',
+                data: {
+                    labels: ai_show_data.map(d => d.ai_status),
+                    datasets: [{
+                        label: '8月提现笔数',
+                        data: ai_show_data.map(d => d.august_withdraw_count),
+                        backgroundColor: '#8B5CF6',
+                        borderColor: '#7C3AED',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }, {
+                        label: '9月提现笔数',
+                        data: ai_show_data.map(d => d.september_withdraw_count),
+                        backgroundColor: '#F59E0B',
+                        borderColor: '#D97706',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 7. 各埋点点击率
+            const ctx7 = document.getElementById('clickRateChart').getContext('2d');
+            new Chart(ctx7, {
+                type: 'bar',
+                data: {
+                    labels: click_stats_data.map(d => d.click_type.replace('去提现', '')),
+                    datasets: [{
+                        label: '点击率(%)',
+                        data: click_stats_data.map(d => d.click_rate),
+                        backgroundColor: [
+                            '#EF4444', '#F97316', '#EAB308', 
+                            '#22C55E', '#3B82F6', '#8B5CF6'
+                        ],
+                        borderColor: [
+                            '#DC2626', '#EA580C', '#CA8A04',
+                            '#16A34A', '#2563EB', '#7C3AED'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 8. 各埋点点击人数
+            const ctx8 = document.getElementById('clickUsersChart').getContext('2d');
+            new Chart(ctx8, {
+                type: 'doughnut',
+                data: {
+                    labels: click_stats_data.filter(d => d.click_users > 0).map(d => d.click_type.replace('去提现', '')),
+                    datasets: [{
+                        data: click_stats_data.filter(d => d.click_users > 0).map(d => d.click_users),
+                        backgroundColor: [
+                            '#EF4444', '#F97316', '#EAB308', '#22C55E', '#8B5CF6'
+                        ],
+                        borderColor: '#FFFFFF',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // 9. 埋点转化对比
+            const ctx9 = document.getElementById('conversionChart').getContext('2d');
+            new Chart(ctx9, {
+                type: 'bar',
+                data: {
+                    labels: ['有提现行为埋点', '无提现行为埋点'],
+                    datasets: [{
+                        label: '转化率(%)',
+                        data: [
+                            click_conversion_data.click_users.conversion_rate,
+                            click_conversion_data.no_click_users.conversion_rate
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(201, 203, 207, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(201, 203, 207, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { 
+                        y: { 
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '转化率(%)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 10. 转化漏斗图
+            const ctx10 = document.getElementById('funnelChart').getContext('2d');
+            new Chart(ctx10, {
+                type: 'bar',
+                data: {
+                    labels: ['展示AI入口', '进入AI会话', '有埋点点击', '成功提现'],
+                    datasets: [{
+                        label: '用户数',
+                        data: [2159, 377, 124, 103],
+                        backgroundColor: [
+                            '#3B82F6', '#8B5CF6', '#22C55E', '#F59E0B'
+                        ],
+                        borderColor: [
+                            '#2563EB', '#7C3AED', '#16A34A', '#D97706'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 11. 内部员工-AI入口对比-人数环比
+            const ctx11 = document.getElementById('internalUserGrowthChart').getContext('2d');
+            new Chart(ctx11, {
+                type: 'bar',
+                data: {
+                    labels: ai_impact_data.ai_entry_compare
+                        .filter(item => item.user_type === "内部员工")
+                        .map(d => d.scenario),
+                    datasets: [{
+                        label: '提现人数环比(%)',
+                        data: ai_impact_data.ai_entry_compare
+                            .filter(item => item.user_type === "内部员工")
+                            .map(d => d.user_growth),
+                        backgroundColor: ['#10B981', '#3B82F6'],
+                        borderColor: ['#059669', '#2563EB'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 12. 内部员工-AI入口对比-笔数环比
+            const ctx12 = document.getElementById('internalCountGrowthChart').getContext('2d');
+            new Chart(ctx12, {
+                type: 'bar',
+                data: {
+                    labels: ai_impact_data.ai_entry_compare
+                        .filter(item => item.user_type === "内部员工")
+                        .map(d => d.scenario),
+                    datasets: [{
+                        label: '提现笔数环比(%)',
+                        data: ai_impact_data.ai_entry_compare
+                            .filter(item => item.user_type === "内部员工")
+                            .map(d => d.count_growth),
+                        backgroundColor: ['#F59E0B', '#8B5CF6'],
+                        borderColor: ['#D97706', '#7C3AED'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 13. 非内部员工-AI入口对比-人数环比
+            const ctx13 = document.getElementById('externalUserGrowthChart').getContext('2d');
+            new Chart(ctx13, {
+                type: 'bar',
+                data: {
+                    labels: ai_impact_data.ai_entry_compare
+                        .filter(item => item.user_type === "非内部员工")
+                        .map(d => d.scenario),
+                    datasets: [{
+                        label: '提现人数环比(%)',
+                        data: ai_impact_data.ai_entry_compare
+                            .filter(item => item.user_type === "非内部员工")
+                            .map(d => d.user_growth),
+                        backgroundColor: ['#10B981', '#3B82F6'],
+                        borderColor: ['#059669', '#2563EB'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 14. 非内部员工-AI入口对比-笔数环比
+            const ctx14 = document.getElementById('externalCountGrowthChart').getContext('2d');
+            new Chart(ctx14, {
+                type: 'bar',
+                data: {
+                    labels: ai_impact_data.ai_entry_compare
+                        .filter(item => item.user_type === "非内部员工")
+                        .map(d => d.scenario),
+                    datasets: [{
+                        label: '提现笔数环比(%)',
+                        data: ai_impact_data.ai_entry_compare
+                            .filter(item => item.user_type === "非内部员工")
+                            .map(d => d.count_growth),
+                        backgroundColor: ['#F59E0B', '#8B5CF6'],
+                        borderColor: ['#D97706', '#7C3AED'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 15. 内部员工-会话对比-人数环比
+            const ctx15 = document.getElementById('internalSessionUserGrowthChart').getContext('2d');
+            new Chart(ctx15, {
+                type: 'bar',
+                data: {
+                    labels: ai_impact_data.session_compare
+                        .filter(item => item.user_type === "内部员工")
+                        .map(d => d.scenario),
+                    datasets: [{
+                        label: '提现人数环比(%)',
+                        data: ai_impact_data.session_compare
+                            .filter(item => item.user_type === "内部员工")
+                            .map(d => d.user_growth),
+                        backgroundColor: ['#10B981', '#3B82F6'],
+                        borderColor: ['#059669', '#2563EB'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 16. 内部员工-会话对比-笔数环比
+            const ctx16 = document.getElementById('internalSessionCountGrowthChart').getContext('2d');
+            new Chart(ctx16, {
+                type: 'bar',
+                data: {
+                    labels: ai_impact_data.session_compare
+                        .filter(item => item.user_type === "内部员工")
+                        .map(d => d.scenario),
+                    datasets: [{
+                        label: '提现笔数环比(%)',
+                        data: ai_impact_data.session_compare
+                            .filter(item => item.user_type === "内部员工")
+                            .map(d => d.count_growth),
+                        backgroundColor: ['#F59E0B', '#8B5CF6'],
+                        borderColor: ['#D97706', '#7C3AED'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 17. 非内部员工-会话对比-人数环比
+            const ctx17 = document.getElementById('externalSessionUserGrowthChart').getContext('2d');
+            new Chart(ctx17, {
+                type: 'bar',
+                data: {
+                    labels: ai_impact_data.session_compare
+                        .filter(item => item.user_type === "非内部员工")
+                        .map(d => d.scenario),
+                    datasets: [{
+                        label: '提现人数环比(%)',
+                        data: ai_impact_data.session_compare
+                            .filter(item => item.user_type === "非内部员工")
+                            .map(d => d.user_growth),
+                        backgroundColor: ['#10B981', '#3B82F6'],
+                        borderColor: ['#059669', '#2563EB'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 18. 非内部员工-会话对比-笔数环比
+            const ctx18 = document.getElementById('externalSessionCountGrowthChart').getContext('2d');
+            new Chart(ctx18, {
+                type: 'bar',
+                data: {
+                    labels: ai_impact_data.session_compare
+                        .filter(item => item.user_type === "非内部员工")
+                        .map(d => d.scenario),
+                    datasets: [{
+                        label: '提现笔数环比(%)',
+                        data: ai_impact_data.session_compare
+                            .filter(item => item.user_type === "非内部员工")
+                            .map(d => d.count_growth),
+                        backgroundColor: ['#F59E0B', '#8B5CF6'],
+                        borderColor: ['#D97706', '#7C3AED'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            populateSampleTable();
+            populateAiEntryInternalTable();
+            populateAiEntryExternalTable();
+            populateSessionInternalTable();
+            populateSessionExternalTable();
+            createCharts();
+        });
+    </script>
+</body>
+</html>
