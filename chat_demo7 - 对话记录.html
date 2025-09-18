@@ -1,0 +1,2602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>智能贷款顾问 - 3分钟极速放款</title>
+    <style>
+        * {margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+        :root {
+            --primary-color: #00C853;
+            --primary-gradient: linear-gradient(135deg, #00C853, #009624);
+            --secondary-color: #F5F5F5;
+            --text-primary: #2C3E50;
+            --text-secondary: #7F8C8D;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+body {font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background-color:#F8FAFC;color:var(--text-primary);line-height:1.6;}
+.chat-container {max-width:600px;margin:0 auto;padding:70px 16px 80px;background:#fff;min-height:100vh;position:relative;}
+.chat-header {position:fixed;top:0;left:0;right:0;background:var(--primary-gradient);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;padding:12px 0;z-index:100;max-width:600px;margin:0 auto;}
+.chat-header-content {display:flex;flex-direction:column;align-items:center;padding:0 16px;}
+.chat-header-title {font-size:18px;font-weight:600;margin-bottom:4px;}
+.chat-header-subtitle {font-size:12px;opacity:0.9;}
+.message {margin:16px 0;display:flex;align-items:flex-start;animation:messageSlide 0.3s ease-out;}
+@keyframes messageSlide {from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.message-content {max-width:85%;padding:14px 18px;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);position:relative;}
+.user-message {justify-content:flex-end;}
+.user-message .message-content {background:var(--primary-gradient);color:#fff;margin-right:12px;border-bottom-right-radius:4px;}
+.system-message {justify-content:flex-start;}
+.system-message .message-content {background:#fff;border:1px solid #E5E9F2;margin-left:12px;border-bottom-left-radius:4px;}
+.info-card {background:#F8FAFC;border-radius:var(--radius-md);padding:16px;margin:12px 0;border:1px solid #E5E9F2;}
+.info-card-title {font-weight:600;color:var(--text-primary);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.info-card-content {color:var(--text-secondary);font-size:14px;line-height:1.8;}
+.badge {display:inline-flex;align-items:center;padding:4px 8px;background:rgba(0,200,83,0.1);color:var(--primary-color);border-radius:100px;font-size:12px;font-weight:500;gap:4px;}
+.trust-badge {display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(0,200,83,0.1);border-radius:var(--radius-sm);font-size:13px;color:var(--primary-color);margin:12px 0;}
+.action-buttons {display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.action-button {background:var(--primary-gradient);color:#fff;border:none;padding:10px 20px;border-radius:var(--radius-sm);font-weight:500;font-size:14px;cursor:pointer;transition:all 0.3s ease;display:flex;align-items:center;gap:6px;}
+.action-button:hover {transform:translateY(-1px);box-shadow:var(--shadow-md);}
+.action-button.secondary {background:#fff;border:1px solid #E5E9F2;color:var(--text-primary);}
+.chat-input {position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 16px;box-shadow:0 -2px 10px rgba(0,0,0,0.05);display:flex;flex-direction:column;gap:0;max-width:600px;margin:0 auto;border-top:1px solid #E5E9F2;z-index:99;}
+.quick-actions {display:flex;gap:8px;margin-bottom:8px;padding:0 16px;}
+.quick-action-btn {flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;background:#fff;border:1px solid #E5E9F2;border-radius:var(--radius-sm);color:var(--text-primary);font-size:14px;cursor:pointer;transition:all 0.3s ease;}
+.quick-action-btn:hover {border-color:var(--primary-color);color:var(--primary-color);background:rgba(0,200,83,0.05);}
+.quick-action-btn span:first-child {font-size:16px;}
+.input-row {display:flex;flex-direction:row;gap:12px;}
+.chat-input input {flex:1;padding:12px 16px;border:1px solid #E5E9F2;border-radius:var(--radius-sm);font-size:15px;transition:all 0.3s ease;}
+.chat-input input:focus {outline:none;border-color:var(--primary-color);box-shadow:0 0 0 3px rgba(0,200,83,0.1);}
+.progress-bar {background:#E5E9F2;height:6px;border-radius:3px;margin:12px 0;overflow:hidden;}
+.progress-bar-fill {background:var(--primary-gradient);height:100%;border-radius:3px;transition:width 0.6s ease;}
+.stats {display:flex;gap:16px;margin:12px 0;}
+.stat-item {display:flex;flex-direction:column;align-items:center;}
+.stat-value {font-size:22px;font-weight:600;}
+.stat-label {font-size:12px;color:var(--text-secondary);}
+.info-card.success-card {border:1px solid #00C853;background:#E8F5E9;}
+.info-card.error-card {border:1px solid #FF5252;background:#FFF0F0;}
+.result-summary {margin:12px 0;}
+.result-item {display:flex;justify-content:space-between;margin-bottom:6px;}
+.label {color:var(--text-secondary);}
+.value {color:var(--text-primary);font-weight:500;}
+.gift-package-banner {position:fixed;top:70px;left:0;right:0;background:linear-gradient(135deg,#FF6B6B,#FF8E8E);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;z-index:99;max-width:600px;margin:0 auto;border-radius:0 0 var(--radius-md) var(--radius-md);box-shadow:var(--shadow-md);animation:slideDown 0.5s ease-out;}
+@keyframes slideDown {from{transform:translateY(-100%);}to{transform:translateY(0);}}
+.gift-icon {font-size:24px;animation:bounce 2s infinite;}
+@keyframes bounce {0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.gift-text {flex:1;}
+.gift-title {font-weight:600;font-size:16px;margin-bottom:2px;}
+.gift-desc {font-size:12px;opacity:0.9;}
+.gift-arrow {font-size:20px;}
+.gift-close-btn {position:absolute;right:16px;top:12px;color:#fff;background:rgba(0,0,0,0.15);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;z-index:2;}
+.gift-close-btn:hover {background:rgba(0,0,0,0.25);}
+.gift-package-modal {position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;animation:fadeIn 0.3s ease-out;}
+@keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
+.gift-package-content {background:#fff;border-radius:var(--radius-lg);width:90%;max-width:400px;max-height:80vh;overflow-y:auto;animation:scaleIn 0.3s ease-out;}
+@keyframes scaleIn {from{transform:scale(0.9);}to{transform:scale(1);}}
+.gift-package-header {background:linear-gradient(135deg,#FF6B6B,#FF8E8E);color:#fff;padding:20px;text-align:center;border-radius:var(--radius-lg) var(--radius-lg) 0 0;}
+.gift-package-title {font-size:20px;font-weight:600;margin-bottom:8px;}
+.gift-package-subtitle {font-size:14px;opacity:0.9;}
+.gift-package-body {padding:20px;}
+.gift-item {display:flex;align-items:center;gap:12px;padding:12px;background:#F8FAFC;border-radius:var(--radius-sm);margin-bottom:12px;}
+.gift-item-icon {width:40px;height:40px;background:rgba(255,107,107,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#FF6B6B;}
+.gift-item-info {flex:1;}
+.gift-item-title {font-weight:500;margin-bottom:4px;}
+.gift-item-desc {font-size:12px;color:var(--text-secondary);}
+.gift-item-value {font-weight:600;color:#FF6B6B;}
+.gift-package-footer {padding:16px 20px;border-top:1px solid #E5E9F2;text-align:center;}
+.gift-package-btn {background:linear-gradient(135deg,#FF6B6B,#FF8E8E);color:#fff;border:none;padding:12px 24px;border-radius:var(--radius-sm);font-weight:500;cursor:pointer;transition:all 0.3s ease;}
+.gift-package-btn:hover {transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.gift-package-close {position:absolute;top:16px;right:16px;color:#fff;font-size:24px;cursor:pointer;opacity:0.8;transition:opacity 0.3s ease;}
+.gift-package-close:hover {opacity:1;}
+.progress-steps {margin:20px 0;}
+.progress-step {display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;position:relative;}
+.progress-step:not(:last-child)::after {content:'';position:absolute;left:15px;top:30px;bottom:-14px;width:2px;background:#E5E9F2;}
+.progress-step.completed:not(:last-child)::after {background:var(--primary-color);}
+.step-icon {width:32px;height:32px;border-radius:50%;background:#F8FAFC;border:2px solid #E5E9F2;display:flex;align-items:center;justify-content:center;font-size:14px;z-index:1;}
+.progress-step.completed .step-icon {border-color:var(--primary-color);background:var(--primary-color);color:#fff;}
+.progress-step.active .step-icon {border-color:var(--primary-color);color:var(--primary-color);}
+.step-info {flex:1;}
+.step-title {font-weight:500;color:var(--text-primary);}
+.step-time {font-size:12px;color:var(--text-secondary);}
+.approval-details {display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;background:#F8FAFC;padding:16px;border-radius:var(--radius-md);}
+.detail-item {text-align:center;}
+.detail-label {font-size:12px;color:var(--text-secondary);margin-bottom:4px;}
+.detail-value {font-size:16px;font-weight:600;color:var(--primary-color);}
+.info-item {display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;}
+.info-item .label {color:var(--text-secondary);}
+.info-item .value {color:var(--text-primary);font-weight:500;}
+.comparison-section {margin:16px 0;}
+.comparison-table {width:100%;border-collapse:collapse;margin:16px 0;background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);table-layout:fixed;}
+.comparison-table th,.comparison-table td {padding:12px 8px;text-align:center;border-bottom:1px solid #E5E9F2;font-size:13px;line-height:1.4;}
+.comparison-table th {background:#F8FAFC;font-weight:600;color:var(--text-primary);white-space:nowrap;}
+.comparison-table td {color:var(--text-secondary);}
+.comparison-table tr.highlight {background:rgba(0,200,83,0.05);}
+.comparison-table tr.highlight td {color:var(--primary-color);font-weight:600;}
+.comparison-table .better {color:#00C853;font-weight:500;}
+.comparison-table .worse {color:#FF5252;font-weight:500;}
+.comparison-table tr:last-child td {border-bottom:none;}
+.comparison-table tr:hover td {background:rgba(0,200,83,0.02);}
+.comparison-table tr.highlight:hover td {background:rgba(0,200,83,0.08);}
+.comparison-table th:nth-child(1),.comparison-table td:nth-child(1) {width:15%;}
+.comparison-table th:nth-child(2),.comparison-table td:nth-child(2),.comparison-table th:nth-child(3),.comparison-table td:nth-child(3) {width:15%;}
+.comparison-table th:nth-child(4),.comparison-table td:nth-child(4),.comparison-table th:nth-child(5),.comparison-table td:nth-child(5) {width:15%;}
+.comparison-table th:nth-child(6),.comparison-table td:nth-child(6) {width:25%;}
+.coupon-list {display:flex;flex-direction:column;gap:12px;}
+.coupon-item {background:#fff;border:1px solid #E5E9F2;border-radius:var(--radius-sm);padding:16px;display:flex;align-items:center;gap:12px;}
+.coupon-icon {width:40px;height:40px;background:rgba(0,200,83,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--primary-color);}
+.coupon-info {flex:1;}
+.coupon-name {font-weight:500;margin-bottom:4px;}
+.coupon-desc {font-size:12px;color:var(--text-secondary);}
+.coupon-value {font-weight:600;color:var(--primary-color);}
+.irr-qmark {display:inline-block;margin-left:4px;color:#00C853;background:#E5F9EF;border-radius:50%;width:16px;height:16px;font-size:12px;text-align:center;line-height:16px;cursor:pointer;border:1px solid #B2F2D7;font-weight:bold;transition:background 0.2s;}
+.irr-qmark:hover {background:#B2F2D7;}
+        @media (prefers-color-scheme: dark) {
+    :root {--text-primary:#E5E9F2;--text-secondary:#A0AEC0;}
+    body {background-color:#1A202C;}
+    .chat-container {background:#1A202C;}
+    .system-message .message-content {background:#2D3748;border-color:#4A5568;}
+    .info-card {background:#2D3748;border-color:#4A5568;}
+    .chat-input {background:#2D3748;border-color:#4A5568;}
+    .chat-input input {background:#1A202C;border-color:#4A5568;color:#fff;}
+    .form-group select,.form-group input {background:#1A202C;border-color:#4A5568;color:#fff;}
+    .upload-area {border-color:#4A5568;}
+    .step {background:#1A202C;}
+}
+@media screen and (max-width:768px) {
+    .chat-header {padding:8px 0;}
+    .chat-container {padding:60px 12px 70px;}
+    .message-content {max-width:90%;}
+    .action-button {padding:8px 16px;}
+    .stats {gap:8px;}
+    .stat-value {font-size:18px;}
+}
+@keyframes spin { 0%{transform:rotate(0);} 100%{transform:rotate(360deg);} }
+@keyframes breathBtn {
+  0% { box-shadow:0 4px 16px rgba(0,200,83,0.10); transform:scale(1); }
+  60% { box-shadow:0 8px 32px 4px rgba(0,200,83,0.18); transform:scale(1.06); }
+  100% { box-shadow:0 4px 16px rgba(0,200,83,0.10); transform:scale(1); }
+        }
+    </style>
+    <!-- 在样式区增加动效 -->
+    <style>
+        @keyframes best-bounce {0%{transform:translateY(0);}100%{transform:translateY(-8px) scale(1.06);}}
+        @keyframes slideDown {from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+        @keyframes valueChipPulse {0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
+        @keyframes barGrow {from{width:0;}to{width:var(--bar-width);}}
+        @keyframes circleGrow {from{stroke-dasharray:0 314;}to{stroke-dasharray:var(--circle-dash) 314;}}
+        @keyframes fadeInUp {from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+        @keyframes scaleIn {from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+        
+        /* 新增：优惠价值芯片动画 */
+        .value-chip {
+            transition: all 0.3s ease;
+            animation: valueChipPulse 2s ease-in-out infinite;
+        }
+        .value-chip:hover {
+            transform: scale(1.1);
+            background: rgba(255,255,255,0.3) !important;
+        }
+        
+        /* 新增：IRR柱子悬停效果 */
+        .irr-bar {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .irr-bar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        /* 新增：工具提示动画 */
+        .irr-tooltip {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        /* 新增：卡片悬停效果 */
+        .deal-activity-card:hover,
+        .deal-coupon-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,200,83,0.15);
+        }
+        
+        /* 新增：输入框焦点效果 */
+        input:focus, select:focus {
+            border-color: #00C853 !important;
+            box-shadow: 0 0 0 3px rgba(0,200,83,0.1) !important;
+            transform: scale(1.02);
+        }
+        
+        /* 新增：按钮悬停效果 */
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,200,83,0.25);
+        }
+        
+        /* 新增：环形进度图动画 */
+        .circle-progress {
+            animation: circleGrow 1.5s ease-out;
+        }
+        
+        /* 新增：横向进度条动画 */
+        .progress-bar {
+            animation: barGrow 1s ease-out;
+        }
+        
+        /* 新增：页面元素进入动画 */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .scale-in {
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        /* 新增：三个核心模块的整体性样式 */
+        .core-modules-container {
+            position: relative;
+        }
+        
+        .core-modules-container::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, transparent, #00C853, transparent);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        
+        .module-card {
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,200,83,0.15);
+        }
+        
+        .module-connector {
+            position: relative;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        
+        .module-connector::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #00C853;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(0,200,83,0.1);
+        }
+        
+        .module-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(180deg, #00C853, transparent);
+        }
+        
+        /* 新增：模块高亮效果 */
+        .module-highlight {
+            animation: modulePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes modulePulse {
+            0%, 100% { box-shadow: 0 8px 32px rgba(0,200,83,0.1); }
+            50% { box-shadow: 0 8px 32px rgba(0,200,83,0.25); }
+        }
+        
+        /* 新增：进度指示器 */
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 16px 0;
+            font-size: 12px;
+            color: #7F8C8D;
+        }
+        
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .progress-step.active {
+            color: #00C853;
+            font-weight: 600;
+        }
+        
+        .progress-step.completed {
+            color: #00C853;
+        }
+        
+        .progress-step.completed::before {
+            content: '✓';
+            color: #00C853;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-header">
+        <div class="chat-header-content">
+            <div class="chat-header-title">智能贷款顾问</div>
+            <div class="chat-header-subtitle">
+                <span class="badge">
+                    <span>🔥</span>
+                    <span>最近1小时放款2,358笔</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="gift-package-banner" id="giftBanner" onclick="loanApp.showGiftPackage()">
+            <div class="gift-icon">🎁</div>
+            <div class="gift-text">
+                <div class="gift-title">天降大礼包</div>
+                <div class="gift-desc">新人专享优惠</div>
+            </div>
+            <div class="gift-arrow">→</div>
+            <div class="gift-close-btn" onclick="event.stopPropagation();document.getElementById('giftBanner').style.display='none';" style="margin-left:8px;font-size:20px;cursor:pointer;user-select:none;">×</div>
+        </div>
+        <div class="chat-messages">
+            <!-- 优化开场白 -->
+            <div class="message system-message">
+                <div class="message-content">
+                    您好！我是您的专属智能贷款顾问小贷。👋
+                    
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>🎯</span>
+                            <span>极速贷款3大优势</span>
+                        </div>
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-value">⚡️</div>
+                                <div class="stat-label">3分钟极速审批</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">💰</div>
+                                <div class="stat-label">最高可贷50万</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">💫</div>
+                                <div class="stat-label">利率低至0.3%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>🎁</span>
+                            <span>新人专享福利</span>
+                        </div>
+                        <div class="info-card-content">
+                            · 首笔贷款7天免息
+                            · 额度特享上浮20%
+                            · 审批通道优先
+                            · 专属客服服务
+                        </div>
+                    </div>
+
+                    <div class="trust-badge">
+                        <span>🏦 银行存管</span>
+                        <span>|</span>
+                        <span>🔒 隐私加密</span>
+                        <span>|</span>
+                        <span>📱 5000万用户信赖之选</span>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="action-button" onclick="loanApp.startEvaluation()">
+                            <span>👉</span>
+                            <span>立即申请</span>
+                        </button>
+                        <button class="action-button secondary" onclick="loanApp.checkQuota()">
+                            <span>💡</span>
+                            <span>额度试算</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="loanApp.showBestDealsPage()">
+                    <span>💎</span>
+                    <span>醉划算攻略</span>
+                </button>
+                <button class="quick-action-btn" onclick="loanApp.startWithdraw()">
+                    <span>💰</span>
+                    <span>立即提现</span>
+                </button>
+                <button class="quick-action-btn" onclick="loanApp.viewRepaymentPlan()">
+                    <span>💳</span>
+                    <span>一键还款</span>
+                </button>
+            </div>
+            <div class="input-row">
+                <input type="text" placeholder="输入您的问题，AI顾问马上为您解答...">
+                <button class="action-button">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 优化 LoanApplicationManager 类
+        class LoanApplicationManager {
+            constructor() {
+                this.currentStep = 0;
+                this.applicationData = {
+                    userId: 'USER_' + Math.random().toString(36).substr(2, 9),
+                    idCard: null,
+                    faceVerified: false,
+                    preCheckPassed: false,
+                    personalInfo: null,
+                    applyId: 'APPLY_' + Math.random().toString(36).substr(2, 9),
+                    contact1: {
+                        name: '',
+                        phone: '',
+                        relation: ''
+                    },
+                    contact2: {
+                        name: '',
+                        phone: '',
+                        relation: ''
+                    }
+                };
+                
+                // 绑定方法到实例
+                this.startApplication = this.startApplication.bind(this);
+                this.checkQuota = this.checkQuota.bind(this);
+                this.startIdCardOCR = this.startIdCardOCR.bind(this);
+                this.simulateUpload = this.simulateUpload.bind(this);
+                this.handleFrontUploadSuccess = this.handleFrontUploadSuccess.bind(this);
+                this.handleBackUploadSuccess = this.handleBackUploadSuccess.bind(this);
+                this.startFaceVerification = this.startFaceVerification.bind(this);
+                this.confirmWithdraw = this.confirmWithdraw.bind(this);
+                this.checkProgress = this.checkProgress.bind(this);
+                // ... 绑定其他方法
+                
+                // 添加地址数据
+                this.addressData = {}
+
+                // 添加登录状态
+                this.isLoggedIn = false;
+                
+                // 绑定登录相关方法
+                this.showLogin = this.showLogin.bind(this);
+                this.sendVerifyCode = this.sendVerifyCode.bind(this);
+                this.verifyCode = this.verifyCode.bind(this);
+                
+                // 添加优惠活动数据
+                this.benefits = {
+                    coupons: [
+                        { id: 1, name: '7天免息券', value: 100, type: 'interest_free' },
+                        { id: 2, name: '8折利率券', value: 200, type: 'discount' },
+                        { id: 3, name: '50元抵扣券', value: 50, type: 'deduction' }
+                    ],
+                    luckyDraw: {
+                        prize: '10g黄金',
+                        probability: 0.1,
+                        value: 5000
+                    },
+                    checkIn: {
+                        days: 5,
+                        value: 50
+                    },
+                    redPacket: {
+                        total: 10000,
+                        participants: 1000,
+                        value: 10
+                    }
+                };
+                
+                // 添加竞品数据
+                this.competitors = [
+                    { name: '竞品A', irr: 0.15, features: ['多项服务费'] },
+                    { name: '竞品B', irr: 0.12, features: ['附加费用多'] },
+                    { name: '竞品C', irr: 0.13, features: ['有管理费'] }
+                ];
+
+                // 添加优惠活动数据
+                this.activePromotions = [
+                    {
+                        id: 1,
+                        title: "新人专享",
+                        description: "首笔贷款享7天免息特权",
+                        value: 100,
+                        type: "interest_free",
+                        icon: "🎁"
+                    },
+                    {
+                        id: 2,
+                        title: "限时优惠",
+                        description: "8折利率券，最高省2000元",
+                        value: 200,
+                        type: "discount",
+                        icon: "💰"
+                    },
+                    {
+                        id: 3,
+                        title: "签到奖励",
+                        description: "连续签到7天，送50元抵扣券",
+                        value: 50,
+                        type: "deduction",
+                        icon: "📅"
+                    }
+                ];
+            }
+
+            // 开始申请流程
+            async startApplication() {
+                if (!this.isLoggedIn) {
+                    this.showLogin();
+                    return;
+                }
+                
+                chatManager.addSystemMessage(`
+                   
+                `);
+            }
+
+            // 开始身份证识别
+            async startIdCardOCR() {
+                chatManager.addSystemMessage(`
+                    
+                `);
+            }
+
+            // 模拟上传
+            async simulateUpload(side) {
+                chatManager.addSystemMessage(`
+                    
+                `);
+
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 20;
+                    document.querySelector('.progress-bar-fill').style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        if (side === 'front') {
+                            this.handleFrontUploadSuccess();
+                        } else {
+                            this.handleBackUploadSuccess();
+                        }
+                    }
+                }, 300);
+            }
+
+            // 处理正面上传成功
+            handleFrontUploadSuccess() {
+                chatManager.addSystemMessage(`
+                    
+                `);
+            }
+
+            // 处理反面上传成功
+            handleBackUploadSuccess() {
+                chatManager.addSystemMessage(`
+                   
+                `);
+            }
+
+            // 开始活体检测
+            async startFaceVerification() {
+                chatManager.addSystemMessage(`
+                    
+                `);
+            }
+
+            // 修改模拟人脸检测方法
+            async simulateFaceVerify() {}
+
+            // 添加人脸验证成功处理方法
+            handleFaceVerifySuccess() {}
+
+            // 处理人脸检测成功
+            handleFaceCheckSuccess() {}
+
+            // 收集个人信息
+            startPersonalInfoCollection() {}
+
+            // 收集地址信息
+            collectAddress() {}
+
+            // 加载城市选项
+            loadCities(type = 'residence') {
+                const prefix = type === 'residence' ? 'residence' : 'company';
+                const provinceSelect = document.getElementById(`${prefix}Province`);
+                const citySelect = document.getElementById(`${prefix}City`);
+                const districtSelect = document.getElementById(`${prefix}District`);
+                
+                const selectedProvince = provinceSelect.value;
+                
+                // 重置城市和区域选择
+                citySelect.innerHTML = '<option value="">请选择城市</option>';
+                districtSelect.innerHTML = '<option value="">请先选择城市</option>';
+                
+                if (selectedProvince) {
+                    const cities = this.addressData[selectedProvince].cities;
+                    citySelect.disabled = false;
+                    
+                    Object.keys(cities).forEach(cityKey => {
+                        const city = cities[cityKey];
+                        const option = document.createElement('option');
+                        option.value = cityKey;
+                        option.textContent = city.name;
+                        citySelect.appendChild(option);
+                    });
+                } else {
+                    citySelect.disabled = true;
+                    districtSelect.disabled = true;
+                }
+            }
+
+            // 加载区域选项
+            loadDistricts(type = 'residence') {
+                const prefix = type === 'residence' ? 'residence' : 'company';
+                const provinceSelect = document.getElementById(`${prefix}Province`);
+                const citySelect = document.getElementById(`${prefix}City`);
+                const districtSelect = document.getElementById(`${prefix}District`);
+                
+                const selectedProvince = provinceSelect.value;
+                const selectedCity = citySelect.value;
+                
+                // 重置区域选择
+                districtSelect.innerHTML = '<option value="">请选择区域</option>';
+                
+                if (selectedCity) {
+                    const districts = this.addressData[selectedProvince].cities[selectedCity].districts;
+                    districtSelect.disabled = false;
+                    
+                    districts.forEach(district => {
+                        const option = document.createElement('option');
+                        option.value = district;
+                        option.textContent = district;
+                        districtSelect.appendChild(option);
+                    });
+                } else {
+                    districtSelect.disabled = true;
+                }
+            }
+
+            // 收集联系人信息
+            collectContacts() {
+                this.collectFirstContact();
+            }
+
+            // 收集第一联系人信息
+            collectFirstContact() {}
+
+            // 显示第一联系人关系选择
+           
+
+            // 获取关系文本
+            getRelationText(relation) {}
+
+            // 收集单位信息
+            collectCompanyInfo() {}
+
+            // 修改 validateAndSubmitCompanyInfo 方法，添加错误处理
+            validateAndSubmitCompanyInfo() {}
+
+            // 修改 handleError 方法，确保错误提示正确显示
+            handleError(error) {
+                console.error('Error:', error);
+                chatManager.addSystemMessage(`
+                    <div class="info-card error-card">
+                        <div class="info-card-title">
+                            <span>⚠️</span>
+                            <span>提示</span>
+                        </div>
+                        <div class="info-card-content">
+                            ${error.message}
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 修改提交信息方法，先展示确认页
+            async submitAllInfo() {}
+
+            
+
+            // 显示贷前协议
+            showAgreement() {}
+
+            // 开始评估
+            startEvaluation() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>⏳</span>
+                            <span>信息评估中</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="info-card-content">
+                            正在进行智能评估，请稍候...
+                        </div>
+                    </div>
+                `);
+
+                // 模拟进度条
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 20;
+                    document.querySelector('.progress-bar-fill').style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        this.showSubmitSuccess();
+                    }
+                }, 500);
+            }
+
+            // 修改 showSubmitSuccess 方法，添加审核状态判断
+            async showSubmitSuccess() {
+                // 模拟审核结果，80%通过，20%拒绝
+                const isApproved = Math.random() > 0;
+                
+                if (isApproved) {
+                    // 原有的审核通过逻辑
+                    chatManager.addSystemMessage(`
+                        <div class="info-card success-card">
+                            <div class="info-card-title">
+                                <span>🎉</span>
+                                <span>评估完成</span>
+                            </div>
+                            <div class="info-card-content">
+                                恭喜您！基于您提供的信息，已完成智能评估：
+                                <div class="result-summary">
+                                    <div class="result-item">
+                                        <span class="label">✨ 最高可贷额度</span>
+                                        <span class="value">80万元</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">💰 参考月利率</span>
+                                        <span class="value">0.35%起</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="label">⏱️ 最长借款期限</span>
+                                        <span class="value">36个月</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="trust-badge">
+                                <span>💡 已获得VIP通道，享受优先审批</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="action-button" onclick="loanApp.startWithdraw()">
+                                    <span>💰</span>
+                                    <span>立即支用</span>
+                                </button>
+                                <button class="action-button secondary" onclick="loanApp.showRepaymentPlan()">
+                                    <span>📊</span>
+                                    <span>查看还款方案</span>
+                                </button>
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    // 新增审核拒绝逻辑
+                    chatManager.addSystemMessage(`
+                        
+                    `);
+                }
+            }
+
+            
+
+            // 添加立即支用方法
+            startWithdraw() {
+                chatManager.addSystemMessage(`
+                    <div style="max-width:380px;margin:32px auto 0 auto;background:linear-gradient(180deg,#F6FAFF 0%,#FDFDFD 100%);border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,0.08);padding:0 0 20px 0;overflow:hidden;">
+                        <div style="background:#fff;border-radius:16px;margin:0 16px 16px 16px;box-shadow:0 2px 8px rgba(0,0,0,0.03);padding:16px 12px 12px 12px;">
+                            <div style="font-size:14px;color:#7F8C8D;">借多少 <span style='font-size:12px;'>(单笔最高可借￥20,000)</span></div>
+                            <div style="display:flex;align-items:flex-end;margin:8px 0 0 0;">
+                                <span style="font-size:28px;font-weight:600;color:#00C853;">￥</span>
+                                <input type="number" value="1000" min="1000" max="20000" style="border:none;outline:none;font-size:32px;font-weight:700;width:120px;color:#00C853;background:transparent;text-align:left;border-bottom:2px solid #00C853;" />
+                            </div>
+                            <div style="display:flex;gap:8px;margin:12px 0 0 0;">
+                                <button style="flex:1;padding:6px 0;background:#E8F5E9;border:none;border-radius:8px;color:#00C853;font-size:15px;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,0.03);">借1千</button>
+                                <button style="flex:1;padding:6px 0;background:#E8F5E9;border:none;border-radius:8px;color:#00C853;font-size:15px;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,0.03);">借2千</button>
+                            </div>
+                            <div style="font-size:12px;color:#A0AEC0;margin-top:4px;">当前单笔最高20,000元</div>
+                        </div>
+                        <div style="margin:0 16px;">
+                            <div style="padding:12px 0 8px 0;border-bottom:1px solid #F0F1F5;">
+                                <div style="display:flex;align-items:center;justify-content:space-between;font-size:15px;">
+                                <span>还款方式</span>
+                                    <span style='color:#00C853;display:flex;align-items:center;gap:2px;text-align:right;'>按期还 <span style='font-size:12px;color:#A0AEC0;'>(年利率约20.41%)</span> <span style='font-size:16px;'>›</span></span>
+                            </div>
+                                <div style="display:flex;justify-content:flex-end;margin-top:4px;">
+                                    <button onclick="loanApp.showRateComparisonModal()" style="padding:2px 10px;background:#F8FAFC;color:#00C853;border:1px solid #B2F2D7;border-radius:12px;font-size:12px;font-weight:500;cursor:pointer;box-shadow:none;height:26px;line-height:22px;vertical-align:middle;transition:all 0.2s;" onmouseover="this.style.borderColor='#00C853';this.style.background='#E5F9EF';" onmouseout="this.style.borderColor='#B2F2D7';this.style.background='#F8FAFC';">对比其他平台利率</button>
+                                </div>
+                            </div>
+                            <!-- 膨胀券展示行 
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 12px 0;font-size:15px;border-bottom:1px solid #F0F1F5;background:rgba(0,200,83,0.06);">
+                                <span>提现膨胀券</span>
+                                <span style="color:#FF5252;font-weight:600;">到账金额+20元 </span>
+                            </div>-->
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 12px 0;font-size:15px;border-bottom:1px solid #F0F1F5;">
+                                <span>借多久 怎么还</span>
+                                <span style="color:#00C853;cursor:pointer;display:flex;align-items:center;gap:2px;">12期 <span style='font-size:12px;color:#A0AEC0;'>首期7月7日还款￥93.79</span> <span style='font-size:16px;'>›</span></span>
+                            </div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 0 0;font-size:15px;">
+                                <span>收/还款账户</span>
+                                <span style="color:#00C853;cursor:pointer;display:flex;align-items:center;gap:4px;"> <span style='font-size:18px;'>🏦</span>中国建设银行(5790) <span style='font-size:16px;'>›</span></span>
+                            </div>
+                        </div>
+                        <div style="margin:18px 16px 0 16px;">
+                            <div style="font-size:12px;color:#A0AEC0;margin:10px 0 0 0;">请确认本次借款用于 <a href="#" style="color:#00C853;text-decoration:underline;">其他专款用途</a>，请谨慎借款。</div>
+                        </div>
+                        <div style="margin:28px 0 0 0;text-align:center;">
+                            <button class="action-button" style="width:88%;font-size:17px;padding:14px 0;background:linear-gradient(90deg,#00C853,#6DD5FA);border:none;border-radius:24px;box-shadow:0 4px 16px rgba(10,200,83,0.10);font-weight:700;display:flex;justify-content:center;align-items:center;text-align:center;" onclick="loanApp.confirmWithdraw()">去提现</button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 添加确认支用方法
+            confirmWithdraw() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>🎉</span>
+                            <span>支用申请已提交</span>
+                        </div>
+                        <div class="info-card-content">
+                            <div class="success-info">
+                                <p>您的支用申请已受理，预计10分钟内到账</p>
+                                <div class="withdraw-info">
+                                    <div class="info-item">
+                                        <span class="label">提现金额</span>
+                                        <span class="value">1,000元</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="label">膨胀券奖励</span>
+                                        <span class="value" style="color:#FF5252;font-weight:600;">+20元</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="label">到账金额</span>
+                                        <span class="value" style="color:#00C853;font-weight:600;">1,020元</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="label">收款账户</span>
+                                        <span class="value">建设银行(尾号3568)</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="label">预计到账时间</span>
+                                        <span class="value">10分钟内</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trust-badge">
+                            <span>💝 已开启7天免息特权，请合理使用</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.setupAutoRepayment()">
+                                <span>⚙️</span>
+                                <span>设置自动还款</span>
+                            </button>
+                            <button class="action-button secondary" onclick="loanApp.checkProgress()">
+                                <span>📋</span>
+                                <span>查看进度</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 错误处理
+            handleError(error) {
+                console.error('Error:', error);
+                chatManager.addSystemMessage(`
+                    <div class="info-card error-card">
+                        <div class="info-card-title">
+                            <span>⚠️</span>
+                            <span>提示</span>
+                        </div>
+                        <div class="info-card-content">
+                            ${error.message}
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 检查额度
+            checkQuota() {
+                chatManager.addSystemMessage(`
+                    
+                `);
+            }
+
+            // 查看进度
+            checkProgress() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>📋</span>
+                            <span>申请进度追踪</span>
+                        </div>
+                        <div class="info-card-content">
+                            <div style="margin-bottom: 16px;">
+                                申请编号：${this.applicationData.applyId}
+                                <br>申请时间：${new Date().toLocaleString()}
+                            </div>
+                            
+                            <div class="progress-steps">
+                                <div class="progress-step completed">
+                                    <div class="step-icon">✅</div>
+                                    <div class="step-info">
+                                        <div class="step-title">提交申请</div>
+                                        <div class="step-time">10:30</div>
+                                    </div>
+                                </div>
+                                <div class="progress-step completed">
+                                    <div class="step-icon">✅</div>
+                                    <div class="step-info">
+                                        <div class="step-title">实名认证</div>
+                                        <div class="step-time">10:31</div>
+                                    </div>
+                                </div>
+                                <div class="progress-step active">
+                                    <div class="step-icon">⏳</div>
+                                    <div class="step-info">
+                                        <div class="step-title">自动审核中</div>
+                                        <div class="step-time">预计2分钟</div>
+                                    </div>
+                                </div>
+                                <div class="progress-step">
+                                    <div class="step-icon">⭕️</div>
+                                    <div class="step-info">
+                                        <div class="step-title">放款确认</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trust-badge">
+                            <span>⚡️ 正在加速处理中，请稍候...</span>
+                        </div>
+                    </div>
+                `);
+
+                // 模拟3秒后审核通过
+                setTimeout(() => this.showApprovalResult(), 3000);
+            }
+
+            // 显示审核结果
+            showApprovalResult() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>🎉</span>
+                            <span>审核通过</span>
+                        </div>
+                        <div class="info-card-content">
+                            恭喜您！贷款申请已审核通过
+                            <br><br>
+                            <div class="approval-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">审批额度</div>
+                                    <div class="detail-value">50,000元</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">年化利率</div>
+                                    <div class="detail-value">3.6%起</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">可选期限</div>
+                                    <div class="detail-value">3-36个月</div>
+                                </div>
+                            </div>
+                            
+                            <div class="loan-calculator">
+                                <div class="calculator-title">
+                                    <span>💡</span>
+                                    <span>还款计算</span>
+                                </div>
+                                <div class="calculator-content">
+                                    · 借款金额：50,000元
+                                    <br>· 借款期限：12个月
+                                    <br>· 每月还款：约4,287元
+                                    <br>· 总利息：约1,444元
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.startLoanConfirmation()">
+                                <span>💰</span>
+                                <span>确认放款</span>
+                            </button>
+                            <button class="action-button secondary" onclick="loanApp.adjustLoanTerms()">
+                                <span>⚙️</span>
+                                <span>调整方案</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 开始放款确认
+            startLoanConfirmation() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>📝</span>
+                            <span>放款确认</span>
+                        </div>
+                        <div class="info-card-content">
+                            请确认以下放款信息：
+                            
+                            <div class="confirmation-details">
+                                <div class="detail-group">
+                                    <div class="group-title">借款信息</div>
+                                    <div class="group-content">
+                                        · 借款金额：50,000元
+                                        <br>· 借款期限：12个月
+                                        <br>· 每月还款日：每月10日
+                                        <br>· 首次还款日：2024年5月10日
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-group">
+                                    <div class="group-title">收款账户</div>
+                                    <div class="group-content">
+                                        · 开户名：张**
+                                        <br>· 银行：建设银行
+                                        <br>· 卡号：6217 **** **** 3568
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-group">
+                                    <div class="group-title">温馨提示</div>
+                                    <div class="group-content">
+                                        · 预计10分钟内到账
+                                        <br>· 请确保账户可正常收款
+                                        <br>· 首期还款将自动扣款
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trust-badge">
+                            <span>🎁 新用户专享7天免息特权已自动加入</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.confirmLoan()">
+                                <span>✅</span>
+                                <span>确认放款</span>
+                            </button>
+                            <button class="action-button secondary" onclick="loanApp.modifyAccount()">
+                                <span>📝</span>
+                                <span>修改账户</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 确认放款
+            confirmLoan() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>💫</span>
+                            <span>放款处理中</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="info-card-content">
+                            正在为您加速处理放款，请稍候...
+                        </div>
+                    </div>
+                `);
+
+                // 模拟放款进度
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 20;
+                    document.querySelector('.progress-bar-fill').style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        this.showLoanSuccess();
+                    }
+                }, 500);
+            }
+
+            // 显示放款成功
+            showLoanSuccess() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>🎉</span>
+                            <span>放款成功</span>
+                        </div>
+                        <div class="info-card-content">
+                            您的贷款已成功发放！
+                            
+                            <div class="loan-details">
+                                <div class="detail-group">
+                                    <div class="group-title">交易信息</div>
+                                    <div class="group-content">
+                                        · 交易金额：50,000元
+                                        <br>· 交易流水：${this.applicationData.applyId}
+                                        <br>· 预计到账：5-10分钟
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-group">
+                                    <div class="group-title">还款提醒</div>
+                                    <div class="group-content">
+                                        · 首次还款日：2024年5月10日
+                                        <br>· 每月还款：4,287元
+                                        <br>· 温馨提示：将于还款日前3天提醒
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.viewRepaymentPlan()">
+                                <span>📅</span>
+                                <span>查看还款计划</span>
+                            </button>
+                            <button class="action-button secondary" onclick="loanApp.setupAutoRepayment()">
+                                <span>⚙️</span>
+                                <span>设置自动还款</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 查看还款计划
+            viewRepaymentPlan() {}
+
+            // 设置自动还款
+            setupAutoRepayment() {}
+
+            // 验证联系人姓名
+            validateContactName(input) {}
+
+            // 验证联系人手机号
+            validateContactPhone(input) {}
+
+            // 显示登录界面
+            showLogin() {}
+
+            // 发送验证码
+            async sendVerifyCode() {}
+
+            // 验证验证码
+            async verifyCode(code) {
+                if (!/^\d{6}$/.test(code)) {
+                    this.handleError(new Error('请输入6位数字验证码'));
+                    return;
+                }
+
+                // 模拟验证过程
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>🔄</span>
+                            <span>验证中...</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                `);
+
+                // 模拟验证延迟
+                setTimeout(() => {
+                    this.handleLoginSuccess();
+                }, 1500);
+            }
+
+            // 处理登录成功
+            handleLoginSuccess() {}
+
+            // 添加返回修改方法
+            editInfo() {
+                // 返回到单位信息填写页面
+                this.collectCompanyInfo();
+            }
+
+            // 添加查看完整协议方法
+            viewFullAgreement() {}
+
+            // 计算优惠总价值
+            calculateTotalBenefits() {
+                let total = 0;
+                
+                // 计算优惠券价值
+                this.benefits.coupons.forEach(coupon => {
+                    total += coupon.value;
+                });
+                
+                // 计算抽奖期望价值
+                total += this.benefits.luckyDraw.value * this.benefits.luckyDraw.probability;
+                
+                // 计算签到奖励
+                total += this.benefits.checkIn.value;
+                
+                // 计算红包期望价值
+                total += this.benefits.redPacket.value;
+                
+                return total;
+            }
+
+            // 计算实际IRR
+            calculateActualIRR(loanAmount, term, originalIRR) {
+                const totalBenefits = this.calculateTotalBenefits();
+                const monthlyPayment = this.calculateMonthlyPayment(loanAmount, term, originalIRR);
+                const totalPayment = monthlyPayment * term;
+                const actualPayment = totalPayment - totalBenefits;
+                
+                // 使用简化公式计算实际IRR
+                return (actualPayment / loanAmount - 1) / (term / 12);
+            }
+
+            // 计算月供
+            calculateMonthlyPayment(amount, term, irr) {
+                const monthlyRate = irr / 12;
+                return amount * monthlyRate * Math.pow(1 + monthlyRate, term) / (Math.pow(1 + monthlyRate, term) - 1);
+            }
+
+            // 显示优惠价值转换
+            showBenefitsConversion() {
+                const totalBenefits = this.calculateTotalBenefits();
+                
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>🎁</span>
+                            <span>专属优惠价值</span>
+                        </div>
+                        <div class="benefits-section">
+                            <div class="benefits-list">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">🎫</div>
+                                    <div class="benefit-info">
+                                        <div class="benefit-name">优惠券</div>
+                                        <div class="benefit-value">¥350</div>
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">🎲</div>
+                                    <div class="benefit-info">
+                                        <div class="benefit-name">抽奖活动</div>
+                                        <div class="benefit-value">¥500</div>
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">📅</div>
+                                    <div class="benefit-info">
+                                        <div class="benefit-name">签到奖励</div>
+                                        <div class="benefit-value">¥50</div>
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">🧧</div>
+                                    <div class="benefit-info">
+                                        <div class="benefit-name">红包活动</div>
+                                        <div class="benefit-value">¥10</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="total-benefits">
+                                <div>优惠总价值</div>
+                                <div class="total-value">¥${totalBenefits}</div>
+                                <div>可用于抵扣利息</div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 显示竞品对比
+            showCompetitorComparison() {
+                const ourIRR = 0.10; // 我们的基础IRR
+                const actualIRR = this.calculateActualIRR(50000, 12, ourIRR);
+                
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>📊</span>
+                            <span>利率对比</span>
+                        </div>
+                        <div class="comparison-section">
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>平台</th>
+                                        <th>优惠前综合IRR</th>
+                                        <th>优惠后综合IRR</th>
+                                        <th>放款</th>
+                                        <th>特色</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="highlight">
+                                        <td>本平台</td>
+                                        <td>${(ourIRR * 100).toFixed(1)}%</td>
+                                        <td class="better">${(actualIRR * 100).toFixed(1)}% <span class='irr-qmark' title='查看计算过程' onclick='window.showIRRDetailModal()'>?</span></td>
+                                        <td class="better">3分钟</td>
+                                        <td>内部员工专享极速放款</td>
+                                    </tr>
+                                    ${this.competitors.map(comp => `
+                                        <tr>
+                                            <td>${comp.name}</td>
+                                            <td>${(comp.irr * 100).toFixed(1)}%</td>
+                                            <td>${(comp.irr * 100).toFixed(1)}%</td>
+                                            <td>24小时</td>
+                                            <td>${comp.features.join('、')}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="trust-badge">
+                            <span>💡 内部员工专享，优惠后实际利率更低，极速放款服务</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.startWithdraw()">
+                                <span>👉</span>
+                                <span>立即提现</span>
+                            </button>
+                            <button class="action-button secondary" onclick="loanApp.showBenefitCalculator()">
+                                <span>🧮</span>
+                                <span>试算优惠</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 主动推送优惠通知
+            showActivePromotions() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card promotion-card">
+                        <div class="info-card-title">
+                            <span>🎉</span>
+                            <span>专属优惠已到账</span>
+                        </div>
+                        <div class="promotion-list">
+                            ${this.activePromotions.map(promo => `
+                                <div class="promotion-item" onclick="loanApp.showPromotionDetail(${promo.id})">
+                                    <div class="promotion-icon">${promo.icon}</div>
+                                    <div class="promotion-info">
+                                        <div class="promotion-title">${promo.title}</div>
+                                        <div class="promotion-desc">${promo.description}</div>
+                                    </div>
+                                    <div class="promotion-arrow">→</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.showBenefitCalculator()">
+                                <span>🧮</span>
+                                <span>试算优惠</span>
+                            </button>
+                            <button class="action-button secondary" onclick="loanApp.showCouponWallet()">
+                                <span>🎫</span>
+                                <span>查看卡包</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 显示优惠详情
+            showPromotionDetail(promoId) {
+                const promo = this.activePromotions.find(p => p.id === promoId);
+                if (!promo) return;
+
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>${promo.icon}</span>
+                            <span>${promo.title}</span>
+                        </div>
+                        <div class="info-card-content">
+                            <div class="promotion-detail">
+                                <div class="detail-value">¥${promo.value}</div>
+                                <div class="detail-desc">${promo.description}</div>
+                                <div class="detail-rules">
+                                    <h4>使用规则：</h4>
+                                    <ul>
+                                        <li>仅限首笔贷款使用</li>
+                                        <li>不可与其他优惠同时使用</li>
+                                        <li>有效期至2024年12月31日</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.showBenefitCalculator()">
+                                <span>🧮</span>
+                                <span>立即使用</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 显示优惠计算器
+            showBenefitCalculator() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>🧮</span>
+                            <span>优惠试算</span>
+                        </div>
+                        <div class="calculator-section">
+                            <div class="form-group">
+                                <label>借款金额</label>
+                                <input type="number" name="calcAmount" 
+                                       placeholder="请输入借款金额" 
+                                       max="800000" required>
+                            </div>
+                            <div class="form-group">
+                                <label>借款期限</label>
+                                <select name="calcTerm" required>
+                                    <option value="">请选择期限</option>
+                                    <option value="12">12个月</option>
+                                    <option value="24">24个月</option>
+                                    <option value="36">36个月</option>
+                                </select>
+                            </div>
+                            <div class="selected-benefits">
+                                <div class="benefits-title">已选优惠</div>
+                                <div class="benefits-list">
+                                    ${this.activePromotions.map(promo => `
+                                        <div class="benefit-tag">
+                                            <span>${promo.icon}</span>
+                                            <span>${promo.title}</span>
+                                            <span class="benefit-value">¥${promo.value}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.calculateAndCompare()">
+                                <span>📊</span>
+                                <span>计算对比</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 计算并对比
+            calculateAndCompare() {
+                const amount = document.querySelector('input[name="calcAmount"]').value;
+                const term = document.querySelector('select[name="calcTerm"]').value;
+                
+                if (!amount || !term) {
+                    this.handleError(new Error('请填写完整的借款信息'));
+                    return;
+                }
+
+                const ourIRR = 0.10; // 基础IRR
+                const actualIRR = this.calculateActualIRR(parseInt(amount), parseInt(term), ourIRR);
+                const isBetter = actualIRR < Math.min(...this.competitors.map(c => c.irr));
+
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>📊</span>
+                            <span>利率对比</span>
+                        </div>
+                        <div class="comparison-section">
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>平台</th>
+                                        <th>优惠券综合IRR</th>
+                                        <th>优惠后综合IRR</th>
+                                        <th>放款</th>
+                                        <th>特色</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="highlight">
+                                        <td>本平台</td>
+                                        <td>18%</td>
+                                        <td class="better">${(actualIRR * 100).toFixed(1)}% <span class='irr-qmark' title='查看计算过程' onclick='window.showIRRDetailModal()'>?</span></td>
+                                        <td class="better">5分钟</td>
+                                        <td>内部员工专享极速放款</td>
+                                    </tr>
+                                    ${this.competitors.map(comp => `
+                                        <tr>
+                                            <td>${comp.name}</td>
+                                            <td>${(comp.irr * 100).toFixed(1)}%</td>
+                                            <td>${(comp.irr * 100).toFixed(1)}%</td>
+                                            <td>24小时</td>
+                                            <td>${comp.features.join('、')}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="trust-badge">
+                            <span>💡 内部员工专享，优惠后实际利率更低，极速放款服务</span>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 显示优惠券卡包
+            showCouponWallet() {
+                chatManager.addSystemMessage(`
+                    <div class="info-card">
+                        <div class="info-card-title">
+                            <span>🎫</span>
+                            <span>我的优惠券</span>
+                        </div>
+                        <div class="coupon-list">
+                            ${this.activePromotions.map(promo => `
+                                <div class="coupon-item" onclick="loanApp.showPromotionDetail(${promo.id})">
+                                    <div class="coupon-icon">${promo.icon}</div>
+                                    <div class="coupon-info">
+                                        <div class="coupon-name">${promo.title}</div>
+                                        <div class="coupon-desc">${promo.description}</div>
+                                    </div>
+                                    <div class="coupon-value">¥${promo.value}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.showBenefitCalculator()">
+                                <span>🧮</span>
+                                <span>使用优惠</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            // 添加天降大礼包相关方法
+            showGiftPackage() {
+                const ourIRR = 0.18; // 我们的基础IRR
+                const actualIRR = this.calculateActualIRR(50000, 12, ourIRR);
+                
+                const modal = document.createElement('div');
+                modal.className = 'gift-package-modal';
+                modal.innerHTML = `
+                    <div class="gift-package-content">
+                        <div class="gift-package-header">
+                            <div class="gift-package-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</div>
+                            <div class="gift-package-title">利率对比</div>
+                            <div class="gift-package-subtitle">多家平台利率对比</div>
+                        </div>
+                        <div class="gift-package-body">
+                            <div class="comparison-section">
+                                <table class="comparison-table">
+                                    <thead>
+                                        <tr>
+                                            <th>平台名称</th>
+                                            <th>优惠前综合IRR</th>
+                                            <th>优惠后综合IRR</th>
+                                            <th>放款时间</th>
+                                           <!--<th>特色</th> --> 
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="highlight">
+                                            <td>本平台</td>
+                                            <td>${(ourIRR * 100).toFixed(1)}%</td>
+                                            <td class="better">${(actualIRR * 100).toFixed(1)}% <span class='irr-qmark' title='查看计算过程' onclick='window.showIRRDetailModal()'>?</span></td>
+                                            <td class="better">3分钟</td>
+                                           <!-- <td>内部员工专享极速放款</td> -->
+                                        </tr>
+                                        ${this.competitors.map(comp => `
+                                            <tr>
+                                                <td>${comp.name}</td>
+                                                <td>${(comp.irr * 100).toFixed(1)}%</td>
+                                                <td>${(comp.irr * 100).toFixed(1)}%</td>
+                                                <td>24小时</td>
+                                            <!--    <td>${comp.features.join('、')}</td> -->
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="trust-badge">
+                                <span>💡 内部员工专享，优惠后实际利率更低，极速放款服务</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="action-button" onclick="loanApp.startApplication()">
+                                    <span>👉</span>
+                                    <span>立即提现</span>
+                                </button>
+                                <button class="action-button secondary" onclick="loanApp.showBenefitCalculator()">
+                                    <span>🧮</span>
+                                    <span>试算优惠</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            // 添加新的活动参与方法
+            claimCoupon(type) {
+                // 移除礼包弹窗
+                document.querySelector('.gift-package-modal').remove();
+                
+                // 显示领取成功消息
+                chatManager.addSystemMessage(`
+                    <div class="info-card success-card">
+                        <div class="info-card-title">
+                            <span>🎉</span>
+                            <span>领取成功</span>
+                        </div>
+                        <div class="info-card-content">
+                            恭喜您成功领取3期免息券！
+                            <br>优惠券已存入您的账户
+                        </div>
+                        <div class="trust-badge">
+                            <span>💝 优惠券将在您提现时自动使用</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="loanApp.startWithdraw()">
+                                <span>🚀</span>
+                                <span>立即使用</span>
+                            </button>
+                            <button class="action-button secondary" onclick="loanApp.showCouponWallet()">
+                                <span>🎫</span>
+                                <span>查看卡包</span>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            
+
+            joinLuckyDraw() {
+                // 移除礼包弹窗
+                document.querySelector('.gift-package-modal').remove();
+                
+                // 显示抽奖活动页面
+                chatManager.addSystemMessage()
+            }
+
+            goToCheckIn() {
+                // 移除礼包弹窗
+                document.querySelector('.gift-package-modal').remove();
+                
+                // 显示签到页面
+                chatManager.addSystemMessage()
+            }
+
+            // 新增 showRateComparisonModal 方法
+            showRateComparisonModal() {
+                // 先移除已存在的modal
+                const old = document.querySelector('.gift-package-modal');
+                if (old) old.remove();
+                const ourIRR = 0.10;
+                const actualIRR = this.calculateActualIRR(50000, 12, ourIRR);
+                const modal = document.createElement('div');
+                modal.className = 'gift-package-modal';
+                modal.innerHTML = `
+                    <div class="gift-package-content">
+                        <div class="gift-package-header">
+                            <div class="gift-package-close" onclick="document.querySelector('.gift-package-modal').remove();loanApp.startWithdraw();">×</div>
+                            <div class="gift-package-title">利率对比</div>
+                            <div class="gift-package-subtitle">多家平台利率对比</div>
+                        </div>
+                        <div class="gift-package-body">
+                            <div class="comparison-section">
+                                <table class="comparison-table">
+                                    <thead>
+                                        <tr>
+                                            <th>平台</th>
+                                            <th>基础IRR</th>
+                                            <th>优惠后</th>
+                                            <th>放款</th>
+                                            <th>特色</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="highlight">
+                                            <td>本平台</td>
+                                            <td>${(ourIRR * 100).toFixed(1)}%</td>
+                                            <td class="better">${(actualIRR * 100).toFixed(1)}% <span class='irr-qmark' title='查看计算过程' onclick='window.showIRRDetailModal()'>?</span></td>
+                                            <td class="better">3分钟</td>
+                                            <td>内部员工专享极速放款</td>
+                                        </tr>
+                                        ${this.competitors.map(comp => `
+                                            <tr>
+                                                <td>${comp.name}</td>
+                                                <td>${(comp.irr * 100).toFixed(1)}%</td>
+                                                <td>${(comp.irr * 100).toFixed(1)}%</td>
+                                                <td>24小时</td>
+                                                <td>${comp.features.join('、')}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="trust-badge">
+                                <span>💡 内部员工专享，优惠后实际利率更低，极速放款服务</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="action-button" onclick="loanApp.startApplication()">
+                                    <span>👉</span>
+                                    <span>立即申请</span>
+                                </button>
+                                <button class="action-button secondary" onclick="loanApp.showBenefitCalculator()">
+                                    <span>🧮</span>
+                                    <span>试算优惠</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            showBestDealsPage() {
+                // 活动与券数据
+                const activities = [
+                    { name: '月中抽黄金', desc: '月中抽奖，最高1g实物黄金', value: 1.92, icon: '🥇' },
+                    { name: '周三抢券', desc: '每周三限量抢券', value: 10, icon: '🎫' },
+                    { name: '天天签到', desc: '每日签到奖励', value: 5, icon: '📅' },
+                    { name: '瓜分活动', desc: '参与分奖金', value: 2.88, icon: '🎁' },
+                    { name: '十周年抽奖', desc: '十周年抽奖，最高999元', value: 5, icon: '🎲' },
+                    { name: '守信返现', desc: '守信用户专享返现', value: 28, icon: '💎' },
+                ];
+                const coupons = [
+                    { name: '3期免息券', desc: '3期免息，最高减免100元', value: 3, type: 'period', valid: '2025.06.19至2025.09.25', icon: '🎯' },
+                    { name: '7折利率券', desc: '7折利率，最高减免200元', value: 7, type: 'discount', valid: '2025.06.19至2025.12.31', icon: '💰' },
+                    { name: '10元抵扣券', desc: '抵扣金额：10元', value: 10, type: 'money', valid: '2025.06.19至2025.12.31', icon: '💵' },
+                ];
+                const products = [
+                    { name: '2500元3期月息1元', desc: '2500元3期月息1元特权', value: 3, type: 'special', valid: '2025.06.19至2025.12.31', icon: '⚡' },
+                    { name: '8折权益', desc: '8折利率特权', value: 8, type: 'discount', valid: '2025.06.19至2025.12.31', icon: '🏆' },
+                ];
+                const totalValue = activities.reduce((sum, d) => sum + d.value, 0) + coupons.reduce((sum, d) => sum + (d.type==='money'?d.value:0), 0) + products.reduce((sum, d) => sum + (d.type==='special'?d.value:0), 0);
+                
+                // 页面HTML - 重新设计，三个核心模块紧密排列
+                document.querySelector('.chat-container').innerHTML = `
+                    <div style="padding:20px 0 0 0;background:linear-gradient(180deg,#F8FAFC 0%,#FFFFFF 100%);min-height:100vh;">
+                        <!-- 页面标题 -->
+                        <div style="text-align:center;margin-bottom:24px;">
+                            <div style="font-size:24px;font-weight:800;background:linear-gradient(135deg,#00C853,#1976FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;">醉划算攻略</div>
+                            <div style="font-size:14px;color:#7F8C8D;">专属优惠，让您的借款更划算</div>
+                        </div>
+                        
+                        <!-- 核心模块区域 - 三个模块紧密排列 -->
+                        <div style="max-width:420px;margin:0 auto 24px auto;">
+                            
+                            <!-- 模块1：现金价值计算 -->
+                            <div style="background:linear-gradient(135deg,#00C853,#6DD5FA);color:#fff;border-radius:24px;box-shadow:0 8px 32px rgba(0,200,83,0.15);padding:28px 24px;position:relative;overflow:hidden;cursor:pointer;transition:all 0.3s ease;margin-bottom:20px;">
+                                <!-- 装饰元素 -->
+                                <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:rgba(255,255,255,0.1);border-radius:50%;"></div>
+                                <div style="position:absolute;bottom:-30px;left:-30px;width:100px;height:100px;background:rgba(255,255,255,0.08);border-radius:50%;"></div>
+                                
+                                <!-- 主要内容 -->
+                                <div style="text-align:center;position:relative;z-index:2;">
+                                    <div style="font-size:16px;opacity:.9;margin-bottom:12px;">🎯 最大现金价值</div>
+                                    <div id="deal-value-anim" style="font-size:42px;font-weight:900;letter-spacing:1px;margin:8px 0 0 0;text-shadow:0 2px 8px rgba(0,0,0,0.1);">¥0</div>
+                                    <div style="font-size:13px;opacity:.8;margin-top:8px;line-height:1.4;">每人可获得的现金价值存在差异<br>具体以实际为准</div>
+                                </div>
+                                
+                                <!-- 点击提示 -->
+                                <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:11px;opacity:.7;display:flex;align-items:center;gap:4px;">
+                                    <span>👆</span>
+                                    <span>点击查看详情</span>
+                                </div>
+                            </div>
+                            
+                            <!-- 价值构成详情（默认隐藏） -->
+                            <div id="deal-value-breakdown" style="background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);padding:20px;margin-bottom:20px;display:none;animation:slideDown 0.4s ease-out;border:1px solid rgba(0,200,83,0.1);">
+                                <div style="font-size:15px;font-weight:600;margin-bottom:16px;color:#00C853;text-align:center;">💰 优惠价值构成</div>
+                                
+                                <!-- 分类展示 -->
+                                <div style="display:flex;flex-direction:column;gap:12px;">
+                                    <!-- 活动类 -->
+                                    <div style="background:linear-gradient(135deg,#F8FAFC,#E8F5E9);border-radius:12px;padding:16px;">
+                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                                            <span style="font-size:16px;">🎉</span>
+                                            <span style="font-size:14px;font-weight:600;color:#00C853;">活动奖励</span>
+                                            <span style="margin-left:auto;font-size:16px;font-weight:700;color:#00C853;">¥${activities.reduce((sum, d) => sum + d.value, 0).toFixed(2)}</span>
+                                        </div>
+                                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                                            ${activities.map(d => `
+                                                <div style="background:rgba(0,200,83,0.1);color:#00C853;padding:4px 8px;border-radius:8px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:4px;">
+                                                    <span>${d.icon}</span>
+                                                    <span>${d.name}</span>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 券类 -->
+                                    <div style="background:linear-gradient(135deg,#F8FAFC,#E3F2FD);border-radius:12px;padding:16px;">
+                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                                            <span style="font-size:16px;">🎫</span>
+                                            <span style="font-size:14px;font-weight:600;color:#1976FF;">优惠券</span>
+                                            <span style="margin-left:auto;font-size:16px;font-weight:700;color:#1976FF;">¥${coupons.reduce((sum, d) => sum + (d.type==='money'?d.value:0), 0).toFixed(2)}</span>
+                                        </div>
+                                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                                            ${coupons.map(c => `
+                                                <div style="background:rgba(25,118,210,0.1);color:#1976FF;padding:4px 8px;border-radius:8px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:4px;">
+                                                    <span>${c.icon}</span>
+                                                    <span>${c.name}</span>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 权益类 -->
+                                    <div style="background:linear-gradient(135deg,#F8FAFC,#FFF3E0);border-radius:12px;padding:16px;">
+                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                                            <span style="font-size:16px;">⚡</span>
+                                            <span style="font-size:14px;font-weight:600;color:#FF9800;">产品权益</span>
+                                            <span style="margin-left:auto;font-size:16px;font-weight:700;color:#FF9800;">¥${products.reduce((sum, d) => sum + (d.type==='special'?d.value:0), 0).toFixed(2)}</span>
+                                        </div>
+                                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                                            ${products.map(p => `
+                                                <div style="background:rgba(255,152,0,0.1);color:#FF9800;padding:4px 8px;border-radius:8px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:4px;">
+                                                    <span>${p.icon}</span>
+                                                    <span>${p.name}</span>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- IRR影响提示 -->
+                                <div id="deal-irr-hint" style="margin-top:16px;padding:12px;background:linear-gradient(135deg,#E8F5E9,#F3E5F5);border-radius:10px;text-align:center;border:1px solid rgba(0,200,83,0.2);">
+                                    <div style="font-size:13px;color:#00C853;font-weight:500;">
+                                        💡 这些优惠价值将直接抵扣您的借款利息，让实际IRR更低！
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 模块2：现金价值转换成IRR -->
+                            <div style="background:#fff;border-radius:24px;box-shadow:0 8px 32px rgba(0,200,83,0.1);padding:28px 24px;border:2px solid rgba(0,200,83,0.1);margin-bottom:20px;">
+                                <div style="text-align:center;margin-bottom:24px;">
+                                    <div style="font-size:18px;font-weight:700;color:#00C853;margin-bottom:8px;">🧮 价值换算与IRR转换</div>
+                                    <div style="font-size:13px;color:#7F8C8D;">输入借款信息，计算优惠后的实际IRR</div>
+                                </div>
+                                
+                                <div style="display:flex;gap:16px;align-items:flex-end;margin-bottom:24px;">
+                                    <div style="flex:1;display:flex;flex-direction:column;">
+                                        <label style="color:#00C853;font-weight:600;font-size:14px;margin-bottom:6px;">💰 借款金额</label>
+                                        <input id="bestDealAmount" type="number" placeholder="请输入金额" style="padding:14px 16px;border:2px solid #E5E9F2;border-radius:12px;font-size:15px;transition:all 0.3s ease;background:#F8FAFC;" autocomplete="off" inputmode="decimal" step="1" min="1">
+                                    </div>
+                                    <div style="flex:1;display:flex;flex-direction:column;">
+                                        <label style="color:#00C853;font-weight:600;font-size:14px;margin-bottom:6px;">📅 分期期数</label>
+                                        <select id="bestDealTerm" style="padding:14px 16px;border:2px solid #E5E9F2;border-radius:12px;font-size:15px;transition:all 0.3s ease;background:#F8FAFC;">
+                                            <option value="12">12期</option>
+                                            <option value="24">24期</option>
+                                            <option value="36">36期</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <button id="bestDealCalcBtn" onclick="loanApp.calculateBestDealIRR()" class="action-button" style="width:100%;font-size:16px;padding:16px 0;background:linear-gradient(135deg,#00C853,#6DD5FA);color:#fff;border:none;border-radius:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(0,200,83,0.2);transition:all 0.3s ease;">
+                                    <span id="bestDealCalcBtnText" style="display:inline-block;">🚀 立即计算IRR对比</span>
+                                    <span id="bestDealCalcBtnLoading" style="display:none;width:20px;height:20px;"></span>
+                                </button>
+                                
+                                <!-- IRR转换结果展示区域 -->
+                                <div id="bestDealResult" style="padding-top:24px;display:none;"></div>
+                            </div>
+                            
+                            <!-- 模块3：IRR对比柱形图（默认隐藏，计算后显示） -->
+                            <div id="irr-comparison-section" style="background:#fff;border-radius:24px;box-shadow:0 8px 32px rgba(0,200,83,0.1);padding:28px 24px;border:2px solid rgba(0,200,83,0.1);display:none;">
+                                <div style="text-align:center;margin-bottom:24px;">
+                                    <div style="font-size:18px;font-weight:700;color:#00C853;margin-bottom:8px;">📊 IRR对比结果</div>
+                                    <div style="font-size:13px;color:#7F8C8D;">查看本平台与竞品的IRR对比</div>
+                                </div>
+                                <div id="irr-comparison-content"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 活动卡片区域 - 移到核心模块下方 -->
+                        <div style="max-width:420px;margin:0 auto 24px auto;">
+                            <div style="font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                                <span>🔥</span>
+                                <span>热门活动</span>
+                            </div>
+                            ${activities.map(d => `
+                                <div class="deal-activity-card" style="display:flex;justify-content:space-between;align-items:center;padding:20px;margin-bottom:16px;background:#fff;border-radius:20px;box-shadow:0 4px 16px rgba(0,200,83,0.08);transition:all 0.3s ease;border:1px solid rgba(0,200,83,0.05);">
+                                    <div style="padding-left:8px;flex:1;">
+                                        <div style="font-weight:600;font-size:16px;color:#2C3E50;margin-bottom:6px;">${d.icon} ${d.name}</div>
+                                        <div style="font-size:13px;color:#7F8C8D;line-height:1.4;">${d.desc}</div>
+                                    </div>
+                                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;margin-right:16px;">
+                                        <span style='font-size:20px;color:#00C853;font-weight:700;'>¥${d.value.toFixed(2)}</span>
+                                    </div>
+                                    <button onclick="loanApp.showComingSoon()" class="deal-activity-btn" style="background:linear-gradient(135deg,#00C853,#6DD5FA);color:#fff;border:none;border-radius:20px;padding:10px 24px;font-weight:600;font-size:14px;cursor:pointer;transition:all 0.3s ease;box-shadow:0 2px 8px rgba(0,200,83,0.2);">去参与</button>
+                                </div>
+                            `).join('')}
+                            
+                            <div style="font-size:16px;font-weight:600;margin:24px 0 12px 0;display:flex;align-items:center;gap:8px;">
+                                <span>🎫</span>
+                                <span>专属优惠券</span>
+                            </div>
+                            ${coupons.map(c => `
+                                <div class="deal-coupon-card" style="display:flex;align-items:stretch;margin-bottom:16px;background:#fff;border-radius:20px;box-shadow:0 4px 16px rgba(0,200,83,0.08);overflow:hidden;border:1px solid rgba(0,200,83,0.05);">
+                                    <div style="flex:1;padding:20px 0 20px 20px;display:flex;flex-direction:column;justify-content:center;">
+                                        <div style="font-weight:600;font-size:16px;color:#2C3E50;margin-bottom:6px;">${c.icon} ${c.name}</div>
+                                        <div style="font-size:12px;color:#7F8C8D;margin:4px 0 2px 0;">有效期：${c.valid}</div>
+                                        <div style="font-size:13px;color:#7F8C8D;">${c.desc}</div>
+                                    </div>
+                                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:80px;background:linear-gradient(135deg,#F8FAFC,#E8F5E9);">
+                                        <div style="color:#00C853;font-size:18px;font-weight:700;">${c.type==='money'?c.value+'元':c.type==='period'?c.value+'期':c.value+'折'}</div>
+                                    </div>
+                                    <button onclick="loanApp.showComingSoon()" style="background:linear-gradient(180deg,#00C853,#6DD5FA);color:#fff;border:none;border-radius:0 20px 20px 0;width:60px;font-size:14px;font-weight:600;cursor:pointer;writing-mode:vertical-lr;letter-spacing:2px;transition:all 0.3s ease;">去使用</button>
+                                </div>
+                            `).join('')}
+                            
+                            <div style="font-size:16px;font-weight:600;margin:24px 0 12px 0;display:flex;align-items:center;gap:8px;">
+                                <span>⚡</span>
+                                <span>产品权益</span>
+                            </div>
+                            ${products.map(p => `
+                                <div class="deal-coupon-card" style="display:flex;align-items:stretch;margin-bottom:16px;background:#fff;border-radius:20px;box-shadow:0 4px 16px rgba(0,200,83,0.08);overflow:hidden;border:1px solid rgba(0,200,83,0.05);">
+                                    <div style="flex:1;padding:20px 0 20px 20px;display:flex;flex-direction:column;justify-content:center;">
+                                        <div style="font-weight:600;font-size:16px;color:#2C3E50;margin-bottom:6px;">${p.icon} ${p.name}</div>
+                                        <div style="font-size:12px;color:#7F8C8D;margin:4px 0 2px 0;">有效期：${p.valid}</div>
+                                        <div style="font-size:13px;color:#7F8C8D;">${p.desc}</div>
+                                    </div>
+                                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:80px;background:linear-gradient(135deg,#F8FAFC,#E8F5E9);">
+                                        <div style="color:#00C853;font-size:18px;font-weight:700;">${p.type==='special'?p.value+'期':p.value+'折'}</div>
+                                    </div>
+                                    <button onclick="loanApp.showComingSoon()" style="background:linear-gradient(180deg,#00C853,#6DD5FA);color:#fff;border:none;border-radius:0 20px 20px 0;width:60px;font-size:14px;font-weight:600;cursor:pointer;writing-mode:vertical-lr;letter-spacing:2px;transition:all 0.3s ease;">去使用</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <!-- 底部说明 -->
+                        <div style="max-width:420px;margin:0 auto 24px auto;text-align:center;">
+                            <div style="background:linear-gradient(135deg,#F8FAFC,#E8F5E9);border-radius:20px;padding:20px;border:1px solid rgba(0,200,83,0.1);">
+                                <div style="font-size:15px;font-weight:600;margin-bottom:8px;color:#00C853;">
+                                    💡 优惠价值与IRR的关系
+                                </div>
+                                <div style="font-size:13px;color:#7F8C8D;line-height:1.6;">
+                                    最大现金价值 <strong style="color:#00C853;">¥${totalValue.toFixed(2)}</strong> 可直接抵扣借款利息，<br>
+                                    让您的实际借款成本更低，综合IRR更优惠！
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // 动画数字和动效
+                setTimeout(()=>{
+                    let v = 0;
+                    const tv = totalValue.toFixed(2);
+                    const anim = document.getElementById('deal-value-anim');
+                    function step(){
+                        v += Math.max(1, Math.ceil((tv - v) / 10));
+                        if(v >= tv){
+                            anim.textContent = '¥' + tv;
+                            return;
+                        }
+                        anim.textContent = '¥' + v;
+                        requestAnimationFrame(step);
+                    }
+                    step();
+                }, 100);
+                
+                // 添加点击交互：点击最大现金价值卡片显示详细信息
+                setTimeout(() => {
+                    const totalValueCard = document.querySelector('#deal-total-value') || document.querySelector('[style*="background:linear-gradient(135deg,#00C853,#6DD5FA)"]');
+                    const breakdown = document.getElementById('deal-value-breakdown');
+                    
+                    if (totalValueCard && breakdown) {
+                        totalValueCard.onclick = function() {
+                            if (breakdown.style.display === 'none') {
+                                breakdown.style.display = 'block';
+                                // 添加展开动画
+                                breakdown.style.animation = 'slideDown 0.4s ease-out';
+                                
+                                // 高亮IRR转换模块，提示用户下一步
+                                const irrModule = document.querySelector('[style*="价值换算与IRR转换"]');
+                                if (irrModule) {
+                                    irrModule.style.boxShadow = '0 8px 32px rgba(0,200,83,0.25)';
+                                    irrModule.style.border = '2px solid #00C853';
+                                    setTimeout(() => {
+                                        irrModule.style.boxShadow = '0 8px 32px rgba(0,200,83,0.1)';
+                                        irrModule.style.border = '2px solid rgba(0,200,83,0.1)';
+                                    }, 2000);
+                                }
+                            } else {
+                                breakdown.style.display = 'none';
+                            }
+                        };
+                        
+                        // 添加悬停效果
+                        totalValueCard.onmouseenter = function() {
+                            this.style.transform = 'translateY(-4px) scale(1.02)';
+                            this.style.boxShadow = '0 12px 40px rgba(0,200,83,0.25)';
+                        };
+                        totalValueCard.onmouseleave = function() {
+                            this.style.transform = 'translateY(0) scale(1)';
+                            this.style.boxShadow = '0 8px 32px rgba(0,200,83,0.15)';
+                        };
+                    }
+                    
+                    // 为活动卡片添加悬停效果
+                    document.querySelectorAll('.deal-activity-card, .deal-coupon-card').forEach(card => {
+                        card.onmouseenter = function() {
+                            this.style.transform = 'translateY(-2px)';
+                            this.style.boxShadow = '0 8px 24px rgba(0,200,83,0.15)';
+                        };
+                        card.onmouseleave = function() {
+                            this.style.transform = 'translateY(0)';
+                            this.style.boxShadow = '0 4px 16px rgba(0,200,83,0.08)';
+                        };
+                    });
+                    
+                    // 为页面元素添加进入动画
+                    const elements = document.querySelectorAll('.deal-activity-card, .deal-coupon-card');
+                    elements.forEach((el, index) => {
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            el.style.transition = 'all 0.6s ease-out';
+                            el.style.opacity = '1';
+                            el.style.transform = 'translateY(0)';
+                        }, 100 + index * 100);
+                    });
+                    
+                    // 为输入框添加焦点效果
+                    const inputs = document.querySelectorAll('input, select');
+                    inputs.forEach(input => {
+                        input.addEventListener('focus', function() {
+                            this.style.borderColor = '#00C853';
+                            this.style.boxShadow = '0 0 0 3px rgba(0,200,83,0.1)';
+                            this.style.transform = 'scale(1.02)';
+                        });
+                        input.addEventListener('blur', function() {
+                            this.style.borderColor = '#E5E9F2';
+                            this.style.boxShadow = 'none';
+                            this.style.transform = 'scale(1)';
+                        });
+                    });
+                    
+                    // 为计算按钮添加悬停效果
+                    const calcBtn = document.getElementById('bestDealCalcBtn');
+                    if (calcBtn) {
+                        calcBtn.addEventListener('mouseenter', function() {
+                            this.style.transform = 'translateY(-2px)';
+                            this.style.boxShadow = '0 6px 20px rgba(0,200,83,0.25)';
+                        });
+                        calcBtn.addEventListener('mouseleave', function() {
+                            this.style.transform = 'translateY(0)';
+                            this.style.boxShadow = '0 4px 16px rgba(0,200,83,0.2)';
+                        });
+                    }
+                    
+                }, 1000);
+            }
+
+            // 计算IRR对比
+            calculateBestDealIRR() {
+                const btn = document.getElementById('bestDealCalcBtn');
+                const btnText = document.getElementById('bestDealCalcBtnText');
+                const btnLoading = document.getElementById('bestDealCalcBtnLoading');
+                btn.disabled = true;
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline-block';
+                btnLoading.innerHTML = `<span style="display:inline-block;width:20px;height:20px;border:3px solid #00C853;border-top:3px solid #fff;border-radius:50%;animation:spin 1s linear infinite;"></span>`;
+                
+                // 先清空结果区
+                document.getElementById('bestDealResult').innerHTML = '';
+                
+                // 计算逻辑延迟模拟
+                setTimeout(() => {
+                    const amount = parseFloat(document.getElementById('bestDealAmount').value);
+                    const term = parseInt(document.getElementById('bestDealTerm').value);
+                    
+                    if (!amount || !term) {
+                        this.handleError(new Error('请填写完整的借款信息'));
+                        btn.disabled = false;
+                        btnText.style.display = 'inline-block';
+                        btnLoading.style.display = 'none';
+                        return;
+                    }
+                    
+                    const deals = [500*0.01,20,10,5,1000*0.005,8,100,150,200];
+                    const totalValue = deals.reduce((sum, v) => sum+v, 0);
+                    const ourIRR = 0.18;
+                    const competitors = [
+                        { name: '竞品A', irr: 0.18, color: '#1976FF' },
+                        { name: '竞品B', irr: 0.20, color: '#FF9800' },
+                        { name: '竞品C', irr: 0.24, color: '#F44336' },
+                        { name: '本平台', irr: 0.18, color: '#00C853' }
+                    ];
+                    
+                    const monthlyPayment = this.calculateMonthlyPayment(amount, term, ourIRR);
+                    const totalPayment = monthlyPayment * term;
+                    const actualPayment = totalPayment - totalValue;
+                    const actualIRR = ((actualPayment / amount - 1) / (term / 12));
+                    competitors[competitors.length-1].irr = actualIRR;
+                    const maxIRR = Math.max(...competitors.map(c=>c.irr));
+                    
+                    // 计算完成后恢复按钮
+                    btn.disabled = false;
+                    btnText.style.display = 'inline-block';
+                    btnLoading.style.display = 'none';
+                    
+                    // 渲染IRR转换结果（在模块2中）
+                    const resultHtml = `
+                        <div style="margin:0;">
+                            <!-- 优惠价值影响展示 -->
+                            <div style="background:linear-gradient(135deg,#F8FAFC,#E8F5E9);border-radius:16px;padding:20px;margin-bottom:20px;border:1px solid rgba(0,200,83,0.15);">
+                                <div style="text-align:center;margin-bottom:16px;">
+                                    <div style="font-size:16px;font-weight:600;color:#00C853;margin-bottom:8px;">💰 优惠价值对IRR的影响</div>
+                                    <div style="font-size:13px;color:#7F8C8D;">点击上方"最大现金价值"查看详细构成</div>
+                                </div>
+                                
+                                <!-- 转化流程图 -->
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+                                    <div style="flex:1;min-width:80px;text-align:center;">
+                                        <div style="background:#1976FF;color:#fff;padding:12px;border-radius:12px;margin-bottom:8px;font-size:14px;font-weight:600;">
+                                            ${(ourIRR*100).toFixed(1)}%
+                                        </div>
+                                        <div style="font-size:11px;color:#7F8C8D;">原始IRR</div>
+                                    </div>
+                                    
+                                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                                        <span style="font-size:20px;color:#00C853;">→</span>
+                                        <div style="background:#00C853;color:#fff;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:600;white-space:nowrap;">
+                                            -¥${totalValue.toFixed(2)}
+                                        </div>
+                                        <div style="font-size:10px;color:#00C853;">优惠抵扣</div>
+                                    </div>
+                                    
+                                    <div style="flex:1;min-width:80px;text-align:center;">
+                                        <div style="background:#00C853;color:#fff;padding:12px;border-radius:12px;margin-bottom:8px;font-size:14px;font-weight:600;">
+                                            ${(actualIRR*100).toFixed(1)}%
+                                        </div>
+                                        <div style="font-size:11px;color:#7F8C8D;">优惠后IRR</div>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top:12px;text-align:center;font-size:12px;color:#00C853;font-weight:500;">
+                                    💡 优惠价值直接抵扣利息，降低综合借款成本
+                                </div>
+                            </div>
+                            
+                            <!-- 下一步提示 -->
+                            <div style="text-align:center;padding:16px;background:linear-gradient(135deg,#E8F5E9,#F3E5F5);border-radius:12px;border:1px solid rgba(0,200,83,0.2);">
+                                <div style="font-size:14px;color:#00C853;font-weight:600;margin-bottom:8px;">
+                                    🎯 计算完成！查看下方IRR对比结果
+                                </div>
+                                <div style="font-size:12px;color:#7F8C8D;">
+                                    本平台优惠后IRR: <strong style="color:#00C853;">${(actualIRR*100).toFixed(1)}%</strong>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('bestDealResult').innerHTML = resultHtml;
+                    document.getElementById('bestDealResult').style.display = 'block';
+                    
+                    // 显示模块3：IRR对比柱形图
+                    setTimeout(() => {
+                        this.showIRRComparison(competitors, totalValue, actualIRR, maxIRR);
+                    }, 500);
+                    
+                }, 800);
+            }
+            
+            // 新增：显示IRR对比柱形图的方法
+            showIRRComparison(competitors, totalValue, actualIRR, maxIRR) {
+                const comparisonSection = document.getElementById('irr-comparison-section');
+                const comparisonContent = document.getElementById('irr-comparison-content');
+                
+                // 渲染IRR对比柱形图
+                const comparisonHtml = `
+                    <div style="margin:0;">
+                        <!-- 全新IRR对比图表 -->
+                        <div style="margin-bottom:24px;">
+                            <div style="font-size:15px;font-weight:600;margin-bottom:20px;text-align:center;color:#2C3E50;">
+                                📊 IRR对比（综合借款成本）
+                            </div>
+                            
+                            <!-- 环形进度图 -->
+                            <div style="display:flex;justify-content:center;margin-bottom:24px;">
+                                <div style="position:relative;width:120px;height:120px;">
+                                    <svg width="120" height="120" viewBox="0 0 120 120">
+                                        <circle cx="60" cy="60" r="50" fill="none" stroke="#E5E9F2" stroke-width="8"/>
+                                        <circle cx="60" cy="60" r="50" fill="none" stroke="#00C853" stroke-width="8" 
+                                                stroke-dasharray="${(actualIRR/maxIRR)*314}" stroke-dashoffset="78.5" 
+                                                transform="rotate(-90 60 60)" style="transition: stroke-dasharray 1s ease-out;"/>
+                                    </svg>
+                                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+                                        <div style="font-size:18px;font-weight:700;color:#00C853;">${(actualIRR*100).toFixed(1)}%</div>
+                                        <div style="font-size:10px;color:#7F8C8D;">优惠后IRR</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 横向对比条 -->
+                            <div style="display:flex;flex-direction:column;gap:12px;">
+                                ${competitors.map((c,i)=>{
+                                    const barWidth = Math.round((c.irr/maxIRR)*100);
+                                    const isBest = c.irr === Math.min(...competitors.map(c=>c.irr));
+                                    const isOurs = i === competitors.length - 1;
+                                    
+                                    return `
+                                        <div style="display:flex;align-items:center;gap:12px;">
+                                            <div style="min-width:60px;font-size:13px;font-weight:${isOurs?700:500};color:${isOurs?'#00C853':'#2C3E50'};">
+                                                ${c.name}
+                                                ${isOurs ? '<br><span style="font-size:10px;color:#00C853;">(含优惠)</span>' : ''}
+                                            </div>
+                                            
+                                            <div style="flex:1;height:24px;background:#F8FAFC;border-radius:12px;overflow:hidden;position:relative;border:1px solid #E5E9F2;">
+                                                <div style="width:${barWidth}%;height:100%;background:${c.color};border-radius:12px;transition:width 1s ease-out;position:relative;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
+                                                    <span style="color:#fff;font-size:11px;font-weight:600;white-space:nowrap;">
+                                                        ${(c.irr*100).toFixed(1)}%
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            ${isBest ? `
+                                                <div style="width:24px;height:24px;background:#00C853;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:best-bounce 1.2s infinite alternate;">
+                                                    <span style="font-size:12px;color:#fff;">🏆</span>
+                                                </div>
+                                            ` : '<div style="width:24px;"></div>'}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            
+                            <!-- 图例 -->
+                            <div style="display:flex;gap:16px;justify-content:center;margin:20px 0;flex-wrap:wrap;">
+                                <div style="display:flex;align-items:center;gap:6px;font-size:12px;">
+                                    <div style="width:12px;height:12px;background:#1976FF;border-radius:2px;"></div>
+                                    <span style="color:#7F8C8D;">竞品平台</span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:6px;font-size:12px;">
+                                    <div style="width:12px;height:12px;background:#00C853;border-radius:2px;"></div>
+                                    <span style="color:#7F8C8D;">本平台(含优惠)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 操作按钮 -->
+                        <div style='display:flex;flex-direction:column;gap:16px;align-items:stretch;width:100%;'>
+                            <button class="action-button deal-breath-btn" style="width:100%;font-size:18px;padding:16px 0;background:linear-gradient(135deg,#00C853,#6DD5FA);color:#fff;border:none;border-radius:24px;box-shadow:0 4px 16px rgba(0,200,83,0.15);font-weight:700;display:flex;align-items:center;justify-content:center;animation:breathBtn 1.8s infinite alternate;" onclick="loanApp.backToMainPage(true)">
+                                🚀 立即提现
+                            </button>
+                            <div style="font-size:14px;margin-bottom:20px;text-align:center;color:#7F8C8D;line-height:1.5;">
+                                此处为优惠叠加计算，实际利率以提现为准<br>
+                                <span style="color:#00C853;font-weight:500;">点击上方"最大现金价值"查看优惠构成详情</span>
+                            </div>
+                            <button class="action-button" style="align-self:center;width:120px;font-size:16px;padding:12px 0;border:2px solid #E5E9F2;background:none;color:#7F8C8D;border-radius:24px;font-weight:600;box-shadow:none;transition:all 0.3s ease;" onclick="loanApp.backToMainPage()">
+                                ← 返回主页面
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                comparisonContent.innerHTML = comparisonHtml;
+                comparisonSection.style.display = 'block';
+                
+                // 添加动画效果
+                setTimeout(() => {
+                    // 为环形进度图添加动画
+                    const circle = document.querySelector('svg circle:last-child');
+                    if (circle) {
+                        circle.style.strokeDasharray = '0 314';
+                        setTimeout(() => {
+                            circle.style.strokeDasharray = `${(actualIRR/maxIRR)*314} 314`;
+                        }, 200);
+                    }
+                    
+                    // 为横向进度条添加动画
+                    const progressBars = document.querySelectorAll('[style*="width:0%"]');
+                    progressBars.forEach((bar, index) => {
+                        setTimeout(() => {
+                            const targetWidth = bar.style.width;
+                            bar.style.width = '0%';
+                            setTimeout(() => {
+                                bar.style.width = targetWidth;
+                            }, 100);
+                        }, index * 200);
+                    });
+                    
+                    // 为按钮添加动画
+                    document.querySelectorAll('.deal-breath-btn').forEach(btn => {
+                        btn.style.animation = 'breathBtn 1.8s infinite alternate';
+                    });
+                    
+                }, 100);
+                
+                // 滚动到对比结果区域
+                setTimeout(() => {
+                    comparisonSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            }
+
+            // 返回首页
+            backToMainPage(openWithdraw) {
+                window.location.reload();
+                if(openWithdraw){
+                    window.localStorage.setItem('openWithdrawOnLoad','1');
+                }else{
+                    window.localStorage.removeItem('openWithdrawOnLoad');
+                }
+            }
+
+            // 弹窗敬请期待
+            showComingSoon() {
+                const modal = document.createElement('div');
+                modal.className = 'gift-package-modal';
+                modal.innerHTML = `<div class="gift-package-content"><div class="gift-package-header"><div class="gift-package-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</div><div class="gift-package-title">敬请期待</div></div><div class="gift-package-body" style="text-align:center;font-size:16px;">该功能即将上线，敬请期待！</div></div>`;
+                document.body.appendChild(modal);
+            }
+        }
+
+        // 在 script 标签内添加 ChatManager 类的实现
+        class ChatManager {
+            constructor() {
+                this.messagesContainer = document.querySelector('.chat-messages');
+                this.input = document.querySelector('.chat-input input');
+                this.sendButton = document.querySelector('.chat-input button');
+                this.initEventListeners();
+            }
+
+            initEventListeners() {
+                this.sendButton.addEventListener('click', () => this.handleSend());
+                this.input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleSend();
+                });
+            }
+
+            handleSend() {
+                const message = this.input.value.trim();
+                if (!message) return;
+
+                this.addUserMessage(message);
+                this.input.value = '';
+                this.processUserMessage(message);
+            }
+
+            addUserMessage(message) {
+                const messageHtml = `
+                    <div class="message user-message">
+                        <div class="message-content">${message}</div>
+                        </div>
+                `;
+                this.appendMessage(messageHtml);
+            }
+
+            addSystemMessage(content) {
+                const messageHtml = `
+                    <div class="message system-message">
+                        <div class="message-content">${content}</div>
+                        </div>
+                `;
+                this.appendMessage(messageHtml);
+            }
+
+            appendMessage(messageHtml) {
+                this.messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
+                this.scrollToBottom();
+            }
+
+            scrollToBottom() {
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+            }
+
+            processUserMessage(message) {
+                // 根据用户输入的关键词触发不同的响应
+                if (message.includes('额度')) {
+                    loanApp.checkQuota();
+                } else if (message.includes('利率') || message.includes('费率')) {
+                    this.showRateInfo();
+                } else if (message.includes('申请') || message.includes('贷款')) {
+                    loanApp.startApplication();
+                } else if (message.includes('认证') || message.includes('身份')) {
+                    loanApp.startIdCardOCR();
+                } else if (message.includes('优惠') || message.includes('活动')) {
+                    this.addSystemMessage(`
+                        <div style='font-size:16px;'>请戳 <button onclick="loanApp.showBestDealPage()" style="color:#00C853;background:none;border:none;cursor:pointer;font-weight:700;font-size:16px;text-decoration:underline;">醉划算攻略</button>，查看全部优惠和活动</div>
+                    `);
+                } else if (message.includes('不用') || message.includes('不缺钱')) {
+                    this.showCouponTease();
+                } else if (message.includes('发吧')) {
+                    this.showCouponCard();
+                } else if (message.includes('可以')) {
+                    this.showWithdrawSubmittedCard();
+                } else {
+                    this.showDefaultResponse();
+                }
+            }
+            
+            // 轻松预约风格的主动推送
+            proactiveWithdrawNudge() {
+                const content = `
+                    <div>
+                        您的剩余额度 <span style="font-weight:700;color:#00C853;">¥5,000</span>，要不要来一笔小额周转？我这边可以帮您一键安排～
+                        <div class="action-buttons" style="margin-top:10px;">
+                            <button class="action-button secondary" onclick="chatManager.handleSimulatedReply('不用')">先不用</button>
+                            <button class="action-button" onclick="chatManager.handleSimulatedReply('我要提现')">现在支用</button>
+                        </div>
+                    </div>`;
+                this.addSystemMessage(content);
+            }
+
+            // "不缺钱/不用"后的引导
+            showCouponTease() {
+                const content = `
+                    <div>
+                        哇～您名下有一张 <b>3期免息券</b>！现在支用¥4,000，预计可少付 <b style="color:#00C853;">¥60.67</b> 利息，真的很香～要不我把券卡片发您看看？
+                        <div class="action-buttons" style="margin-top:10px;">
+                            <button class="action-button" onclick="chatManager.handleSimulatedReply('发吧')">发吧</button>
+                            <button class="action-button secondary" onclick="chatManager.handleSimulatedReply('不了')">再想想</button>
+                        </div>
+                    </div>`;
+                this.addSystemMessage(content);
+            }
+
+            // 优惠券卡片（卡片样式）
+            showCouponCard() {
+                const cardHtml = `
+                    <div class="info-card" style="border-radius:16px;border:1px solid #B2F2D7;background:linear-gradient(180deg,#F8FFFB,#FFFFFF);">
+                        <div class="info-card-title" style="display:flex;align-items:center;gap:8px;">
+                            <span>🎟️</span>
+                            <span>3期免息券</span>
+                            <span class="badge" style="margin-left:auto;">有效期内可用</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;margin-top:8px;">
+                            <div class="coupon-icon">🎯</div>
+                            <div style="flex:1;">
+                                <div style="font-weight:600;color:#2C3E50;">支用¥2,000分3期</div>
+                                <div style="font-size:13px;color:#7F8C8D;">预计可减免利息约 <b style="color:#00C853;">¥30.34</b></div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:12px;color:#7F8C8D;">券类型</div>
+                                <div style="font-weight:700;color:#00C853;">免息3期</div>
+                            </div>
+                        </div>
+                        <div class="action-buttons" style="margin-top:12px;">
+                            <button class="action-button" onclick="chatManager.handleSimulatedReply('可以')">就用这张</button>
+                            <button class="action-button secondary" onclick="loanApp.showCouponWallet()">看看别的券</button>
+                        </div>
+                    </div>`;
+                this.addSystemMessage(cardHtml);
+            }
+
+            // 提现递交成功卡片（卡片样式）
+            showWithdrawSubmittedCard() {
+                const cardHtml = `
+                    <div class="info-card success-card" style="border-radius:16px;">
+                        <div class="info-card-title">
+                            <span>✅</span>
+                            <span>提现已递交</span>
+                        </div>
+                        <div class="info-card-content" style="margin-top:6px;">
+                            我这边已经帮您安排好啦～预计 <b>约3分钟</b> 到账，请留意银行短信/通知。
+                        </div>
+                        <div class="result-summary" style="margin-top:10px;">
+                            <div class="result-item"><span class="label">提现金额</span><span class="value">¥4,000</span></div>
+                            <div class="result-item"><span class="label">券抵扣</span><span class="value" style="color:#00C853;">3期免息（约省¥60.67）</span></div>
+                            <div class="result-item"><span class="label">到账银行卡</span><span class="value">招商银行（尾号1234）</span></div>
+                        </div>
+                    </div>`;
+                this.addSystemMessage(cardHtml);
+            }
+
+            // 快捷回复注入：模拟用户点击按钮的输入
+            handleSimulatedReply(text) {
+                this.addUserMessage(text);
+                this.processUserMessage(text);
+            }
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            // 确保全局可访问
+            window.chatManager = new ChatManager();
+            window.loanApp = new LoanApplicationManager();
+            
+            // 添加调试日志
+            console.log('Application initialized');
+            if(window.localStorage.getItem('openWithdrawOnLoad')==='1'){
+                setTimeout(()=>{
+                    window.loanApp.startWithdraw();
+                    window.localStorage.removeItem('openWithdrawOnLoad');
+                }, 300);
+            }
+            // 主动推送引导
+            setTimeout(()=>{ window.chatManager.proactiveWithdrawNudge(); }, 500);
+        });
+
+        // 全局IRR计算说明弹窗
+        window.showIRRDetailModal = function() {
+            // 先移除已存在的modal
+            const old = document.querySelector('.gift-package-modal');
+            if (old) old.remove();
+            const modal = document.createElement('div');
+            modal.className = 'gift-package-modal';
+            modal.innerHTML = `
+                <div class="gift-package-content">
+                    <div class="gift-package-header">
+                        <div class="gift-package-close" onclick="document.querySelector('.gift-package-modal').remove()">×</div>
+                        <div class="gift-package-title">优惠后IRR计算说明</div>
+                    </div>
+                    <div class="gift-package-body" style="font-size:15px;line-height:1.8;">
+                        <div style="margin-bottom:12px;font-weight:600;">1. 计算包含的全部活动和优惠：</div>
+                        <ul style="margin-bottom:16px;padding-left:20px;">
+                            <li>月中抽黄金</li>
+                            <li>周三抢券</li>
+                            <li>天天签到</li>
+                            <li>瓜分活动</li>
+                            <li>十周年抽奖</li>
+                            <li>梦想助力</li>
+                            <li>9折/6期免期/1000元3期月息1元</li>
+                        </ul>
+                        <div style="margin-bottom:12px;font-weight:600;">2. 优惠折算为单用户现金价值：</div>
+                        <div style="background:#F8FAFC;padding:10px 14px;border-radius:10px;margin-bottom:14px;">
+                            假设单笔借款金额2万元，分12期，统计上述全部活动和优惠，按概率和面额折算为用户可获得的现金价值（如抽奖类按中奖概率*面额，签到/瓜分/券类按面额等）。
+                        </div>
+                        <div style="margin-bottom:12px;font-weight:600;">3. 现金价值抵扣利息后IRR计算过程：</div>
+                        <div style="background:#F8FAFC;padding:10px 14px;border-radius:10px;margin-bottom:14px;">
+                            ① 计算原始总利息和月供<br>
+                            ② 用全部优惠现金价值抵扣总利息<br>
+                            ③ 用抵扣后实际还款额重新计算IRR（内部收益率）<br>
+                            ④ 得到优惠后IRR，通常显著低于竞品
+                        </div>
+                        <div style="margin-bottom:12px;font-weight:600;">4. 计算示意图：</div>
+                        <div style='display:flex;align-items:center;gap:12px;margin-bottom:10px;'>
+                            <div style='flex:1;text-align:center;'>
+                                <div style='font-size:13px;color:#888;'>原始IRR</div>
+                                <div style='font-size:22px;font-weight:700;color:#1976FF;'>10.0%</div>
+                            </div>
+                            <span style='font-size:18px;color:#888;'>→</span>
+                            <div style='flex:1;text-align:center;'>
+                                <div style='font-size:13px;color:#888;'>优惠现金价值抵扣</div>
+                                <div style='font-size:22px;font-weight:700;color:#00C853;'>-¥800</div>
+                            </div>
+                            <span style='font-size:18px;color:#888;'>→</span>
+                            <div style='flex:1;text-align:center;'>
+                                <div style='font-size:13px;color:#888;'>优惠后IRR</div>
+                                <div style='font-size:22px;font-weight:700;color:#00C853;'>8.0%</div>
+                            </div>
+                        </div>
+                        <div style='margin-top:10px;color:#888;font-size:13px;'>* 具体优惠金额及IRR以实际活动为准，计算方式公开透明。</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+    </script>
+</body>
+</html> 
